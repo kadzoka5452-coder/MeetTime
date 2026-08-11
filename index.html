@@ -271,43 +271,7 @@ footer strong{color:#eee}
 .day-card span{font-size:13px;color:#666;font-weight:700}.day-card b{font-size:32px;color:#dd2a7b}.day-card:hover{transform:translateY(-4px);border-color:#dd2a7b;box-shadow:0 12px 30px rgba(221,42,123,.12)}
 .back-btn{border:1px solid #ddd;background:#fff;padding:10px 15px;border-radius:9px;cursor:pointer;font-weight:700}
 @media(max-width:800px){.days-grid{grid-template-columns:repeat(2,1fr)}.calendar-card{padding:22px}}
-</style>
-<style>
-.queue-modal{
-    position:fixed;inset:0;z-index:9999;
-    display:none;align-items:center;justify-content:center;
-    padding:20px;background:rgba(0,0,0,.48);
-}
-.queue-modal.show{display:flex}
-.queue-box{
-    width:min(430px,100%);background:#fff;border-radius:22px;
-    padding:32px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.22);
-    animation:queueIn .25s ease;
-}
-@keyframes queueIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
-.queue-icon{
-    width:58px;height:58px;margin:0 auto 16px;border-radius:50%;
-    display:grid;place-items:center;background:#fff3f8;font-size:27px;
-}
-.queue-box h3{font-size:24px;margin-bottom:7px}
-.queue-box p{color:#777;margin-bottom:18px}
-.queue-number{
-    border:1px solid #eadce4;border-radius:13px;padding:13px;
-    color:#777;font-size:13px;background:#fffafd;
-}
-.queue-number strong{
-    color:#dd2a7b;font-size:22px;margin-left:5px;
-}
-.queue-position{margin:16px 0 22px;font-size:14px;color:#555}
-.queue-position strong{color:#dd2a7b}
-.queue-close{
-    border:0;border-radius:10px;padding:12px 25px;
-    color:#fff;background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-    font-weight:800;cursor:pointer;
-}
-</style>
-
-</head>
+</style></head>
 
 <body>
 
@@ -387,66 +351,94 @@ footer strong{color:#eee}
 
 <div class="modal" id="successModal">
     <div class="modal-box">
-        <div class="check">✓</div>
-        <h3>Başvurun hazır!</h3>
-        <p>
-            Form bilgileri bu demo sayfasında alındı.
-            Gerçek randevu sistemi için bir sunucu/veritabanı bağlantısı gerekir.
-        </p>
+        <div class="check" id="modalIcon">✓</div>
+        <h3 id="modalTitle">Başvurunuz alındı</h3>
+        <p id="modalMessage">Başvurunuz inceleniyor 🧐</p>
         <button class="close" onclick="closeModal()">Tamam</button>
     </div>
 </div>
 
-
-<div class="queue-modal" id="queueModal">
-  <div class="queue-box">
-    <div class="queue-icon">📋</div>
-    <h3>Başvurunuz alındı</h3>
-    <p>Başvurunuz inceleniyor.</p>
-    <div class="queue-number">Sıra No: <strong id="queueNumber">001</strong></div>
-    <div class="queue-position">Sırada <strong id="queuePosition">1.</strong> sıradasınız.</div>
-    <button type="button" class="queue-close" id="queueClose">Tamam</button>
-  </div>
-</div>
-
 <script>
-const cal=document.getElementById("calendarScreen"), formScreen=document.getElementById("bookingFormScreen");
-document.querySelectorAll(".day-card").forEach(b=>b.onclick=()=>{document.getElementById("selectedDay").value=b.dataset.day;cal.style.display="none";formScreen.style.display="block";formScreen.scrollIntoView({behavior:"smooth"});});
-document.getElementById("backToCalendar").onclick=()=>{formScreen.style.display="none";cal.style.display="block";cal.scrollIntoView({behavior:"smooth"});};
-const meetForm = document.getElementById("meetForm");
-const queueModal = document.getElementById("queueModal");
-const queueClose = document.getElementById("queueClose");
-const queueNumber = document.getElementById("queueNumber");
-const queuePosition = document.getElementById("queuePosition");
+const API_URL = "https://meetime-api.kadzoka5452.workers.dev";
+const cal = document.getElementById("calendarScreen");
+const formScreen = document.getElementById("bookingFormScreen");
+const form = document.getElementById("meetForm");
+const modal = document.getElementById("successModal");
+const modalTitle = document.getElementById("modalTitle");
+const modalMessage = document.getElementById("modalMessage");
+const modalIcon = document.getElementById("modalIcon");
 
-function getQueueNumber(){
-    const key = "meetTimeQueue";
-    let current = Number(localStorage.getItem(key) || "0") + 1;
-    localStorage.setItem(key, String(current));
-    return current;
+document.querySelectorAll(".day-card").forEach(button => {
+  button.addEventListener("click", () => {
+    document.getElementById("selectedDay").value = button.dataset.day;
+    cal.style.display = "none";
+    formScreen.style.display = "block";
+    formScreen.scrollIntoView({ behavior: "smooth" });
+  });
+});
+
+document.getElementById("backToCalendar").addEventListener("click", () => {
+  formScreen.style.display = "none";
+  cal.style.display = "block";
+  cal.scrollIntoView({ behavior: "smooth" });
+});
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const submitButton = form.querySelector(".submit");
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "Gönderiliyor...";
+
+  const data = Object.fromEntries(new FormData(form).entries());
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      modalIcon.textContent = "✓";
+      modalTitle.textContent = "Başvurunuz alındı";
+      modalMessage.textContent = result.message;
+      modal.classList.add("show");
+      form.reset();
+      formScreen.style.display = "none";
+      cal.style.display = "block";
+    } else if (result.alreadyApplied) {
+      modalIcon.textContent = "!";
+      modalTitle.textContent = "Zaten bir başvurunuz var";
+      modalMessage.textContent = result.message;
+      modal.classList.add("show");
+    } else {
+      modalIcon.textContent = "!";
+      modalTitle.textContent = "Başvuru gönderilemedi";
+      modalMessage.textContent = result.message || "Bir hata oluştu.";
+      modal.classList.add("show");
+    }
+  } catch (error) {
+    console.error(error);
+    modalIcon.textContent = "!";
+    modalTitle.textContent = "Bağlantı hatası";
+    modalMessage.textContent = "Başvuru sunucuya gönderilemedi. Lütfen tekrar deneyin.";
+    modal.classList.add("show");
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
+});
+
+function closeModal() {
+  modal.classList.remove("show");
 }
 
-meetForm.onsubmit = e => {
-    e.preventDefault();
-
-    const number = getQueueNumber();
-
-    queueNumber.textContent = String(number).padStart(3, "0");
-    queuePosition.textContent = number + ".";
-
-    queueModal.classList.add("show");
-
-    meetForm.reset();
-    document.getElementById("bookingFormScreen").style.display = "none";
-    document.getElementById("calendarScreen").style.display = "block";
-};
-
-queueClose.onclick = () => {
-    queueModal.classList.remove("show");
-};
-
-queueModal.addEventListener("click", e => {
-    if(e.target === queueModal) queueModal.classList.remove("show");
+modal.addEventListener("click", (event) => {
+  if (event.target === modal) closeModal();
 });
 </script>
 
