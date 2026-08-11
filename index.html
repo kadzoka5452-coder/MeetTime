@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeetTime</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23f58529'/%3E%3Cstop offset='.5' stop-color='%23dd2a7b'/%3E%3Cstop offset='1' stop-color='%238134af'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23g)'/%3E%3Cpath d='M20 22h24v20H20z' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M20 27h24M25 18v9M39 18v9' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+    font-family:Inter,Arial,sans-serif;
+    background:#fafafa;
+    color:#171717;
+    line-height:1.6;
+}
+a{text-decoration:none;color:inherit}
+
+header{
+    height:72px;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(18px);
+    border-bottom:1px solid #e8e8e8;
+    position:sticky;
+    top:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 7%;
+}
+.logo{
+    font-size:24px;
+    font-weight:800;
+    letter-spacing:-1px;
+    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+nav{display:flex;gap:28px;font-size:14px;font-weight:600;color:#666}
+nav a:hover{color:#dd2a7b}
+
+.hero{
+    min-height:600px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:90px 20px 70px;
+    background:
+      radial-gradient(circle at 50% 15%,rgba(221,42,123,.10),transparent 35%),
+      #fff;
+}
+.hero-inner{max-width:780px}
+.badge{
+    display:inline-flex;
+    padding:8px 14px;
+    border:1px solid #ead9e2;
+    border-radius:999px;
+    background:#fff;
+    color:#b22569;
+    font-size:12px;
+    font-weight:700;
+    margin-bottom:22px;
+}
+.hero h1{
+    font-size:clamp(48px,8vw,82px);
+    line-height:1;
+    letter-spacing:-4px;
+    margin-bottom:24px;
+}
+.gradient{
+    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+.hero p{
+    max-width:620px;
+    margin:auto;
+    color:#707070;
+    font-size:17px;
+}
+.hero-buttons{
+    margin-top:30px;
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+.btn{
+    padding:13px 21px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:700;
+    transition:.2s;
+}
+.primary{
+    color:white;
+    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
+}
+.primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(221,42,123,.2)}
+.secondary{border:1px solid #ddd;background:white}
+.secondary:hover{border-color:#dd2a7b;color:#c32670}
+
+.section{
+    max-width:1050px;
+    margin:auto;
+    padding:90px 20px;
+}
+.section-title{text-align:center;margin-bottom:45px}
+.section-title span{
+    color:#dd2a7b;
+    font-size:11px;
+    letter-spacing:3px;
+    font-weight:800;
+}
+.section-title h2{
+    font-size:38px;
+    letter-spacing:-2px;
+    margin-top:8px;
+}
+
+.booking-layout{
+    display:grid;
+    grid-template-columns:1fr 1.25fr;
+    gap:28px;
+    align-items:start;
+}
+.info-card,.form-card{
+    background:white;
+    border:1px solid #e8e8e8;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 35px rgba(0,0,0,.04);
+}
+.info-card h3{font-size:22px;margin-bottom:12px}
+.info-card p{color:#777;font-size:14px;margin-bottom:24px}
+.info-list{display:grid;gap:13px}
+.info-item{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    color:#555;
+    font-size:13px;
+}
+.dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#dd2a7b;margin-top:7px;flex:none;
+}
+
+form{display:grid;gap:17px}
+label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    margin-bottom:7px;
+    color:#333;
+}
+input,select,textarea{
+    width:100%;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:13px 14px;
+    background:#fff;
+    color:#222;
+    font:inherit;
+    font-size:14px;
+    outline:none;
+}
+input:focus,select:focus,textarea:focus{
+    border-color:#dd2a7b;
+    box-shadow:0 0 0 3px rgba(221,42,123,.08);
+}
+textarea{min-height:105px;resize:vertical}
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+.submit{
+    border:0;
+    padding:14px;
+    border-radius:10px;
+    color:white;
+    font-weight:800;
+    cursor:pointer;
+    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
+}
+.submit:hover{filter:brightness(1.05);transform:translateY(-1px)}
+
+.instagram{
+    background:#171717;
+    color:white;
+    text-align:center;
+    padding:75px 20px;
+}
+.instagram h2{font-size:38px;letter-spacing:-1.5px}
+.instagram p{color:#aaa;margin:12px 0 25px}
+.instagram-btn{
+    display:inline-block;
+    padding:13px 22px;
+    border-radius:10px;
+    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
+    font-weight:800;
+    font-size:14px;
+}
+
+footer{
+    padding:30px 7%;
+    background:#111;
+    color:#777;
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+}
+footer strong{color:#eee}
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:500;
+}
+.modal.show{display:flex}
+.modal-box{
+    max-width:450px;
+    width:100%;
+    background:#fff;
+    border-radius:20px;
+    padding:32px;
+    text-align:center;
+}
+.check{
+    width:54px;height:54px;border-radius:50%;
+    display:grid;place-items:center;
+    margin:0 auto 18px;
+    background:#e9f9ef;color:#159447;
+    font-size:26px;font-weight:800;
+}
+.modal-box h3{font-size:22px;margin-bottom:8px}
+.modal-box p{color:#777;font-size:14px;margin-bottom:20px}
+.close{
+    border:0;background:#171717;color:#fff;
+    padding:11px 20px;border-radius:9px;
+    cursor:pointer;font-weight:700;
+}
+
+@media(max-width:800px){
+    nav{display:none}
+    .booking-layout{grid-template-columns:1fr}
+    .row{grid-template-columns:1fr}
+    .section{padding:65px 18px}
+    .hero h1{letter-spacing:-3px}
+    footer{flex-direction:column;gap:8px;text-align:center}
+}
+</style>
+<style>
+.calendar-card{max-width:850px;margin:auto;background:#fff;border:1px solid #e7e7e7;border-radius:24px;padding:32px;box-shadow:0 18px 50px rgba(0,0,0,.06)}
+.calendar-head{display:flex;justify-content:space-between;align-items:center}.calendar-head small{color:#dd2a7b;font-size:10px;letter-spacing:3px;font-weight:800}.calendar-head h3{font-size:27px}.calendar-icon{font-size:28px}
+.calendar-note{color:#777;margin:15px 0 25px}.days-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.day-card{min-height:125px;border:1px solid #e5e5e5;border-radius:17px;background:#fff;cursor:pointer;text-align:left;padding:20px;display:flex;flex-direction:column;justify-content:space-between;transition:.2s}
+.day-card span{font-size:13px;color:#666;font-weight:700}.day-card b{font-size:32px;color:#dd2a7b}.day-card:hover{transform:translateY(-4px);border-color:#dd2a7b;box-shadow:0 12px 30px rgba(221,42,123,.12)}
+.back-btn{border:1px solid #ddd;background:#fff;padding:10px 15px;border-radius:9px;cursor:pointer;font-weight:700}
+@media(max-width:800px){.days-grid{grid-template-columns:repeat(2,1fr)}.calendar-card{padding:22px}}
+</style>
+<style>
+.queue-modal{
+    position:fixed;inset:0;z-index:9999;
+    display:none;align-items:center;justify-content:center;
+    padding:20px;background:rgba(0,0,0,.48);
+}
+.queue-modal.show{display:flex}
+.queue-box{
+    width:min(430px,100%);background:#fff;border-radius:22px;
+    padding:32px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.22);
+    animation:queueIn .25s ease;
+}
+@keyframes queueIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.queue-icon{
+    width:58px;height:58px;margin:0 auto 16px;border-radius:50%;
+    display:grid;place-items:center;background:#fff3f8;font-size:27px;
+}
+.queue-box h3{font-size:24px;margin-bottom:7px}
+.queue-box p{color:#777;margin-bottom:18px}
+.queue-number{
+    border:1px solid #eadce4;border-radius:13px;padding:13px;
+    color:#777;font-size:13px;background:#fffafd;
+}
+.queue-number strong{
+    color:#dd2a7b;font-size:22px;margin-left:5px;
+}
+.queue-position{margin:16px 0 22px;font-size:14px;color:#555}
+.queue-position strong{color:#dd2a7b}
+.queue-close{
+    border:0;border-radius:10px;padding:12px 25px;
+    color:#fff;background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
+    font-weight:800;cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <a class="logo" href="#">MeetTime</a>
+    <nav>
+        <a href="#randevu">Randevu</a>
+        <a href="#hakkinda">Nasıl Çalışır?</a>
+        <a href="https://www.instagram.com/a.arslan1636/?hl=tr" target="_blank">Instagram</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="badge">HAFTA İÇİ BULUŞMA SİSTEMİ</div>
+        <h1>Bir gün seç.<br><span class="gradient">Bir buluşma planla.</span></h1>
+        <p>
+            MeetTime üzerinden hafta içi bir buluşma talebi oluştur.
+            Tarihini, saatini ve buluşma nedenini belirt.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#randevu" class="btn primary">Randevu Oluştur</a>
+            <a href="https://www.instagram.com/a.arslan1636/?hl=tr" target="_blank" class="btn secondary">
+                Instagram @a.arslan1636
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="randevu">
+<div class="section-title"><span>MEETTIME</span><h2>Bir gün seç</h2></div>
+<div class="calendar-card" id="calendarScreen">
+  <div class="calendar-head"><div><small>RANDEVU TAKVİMİ</small><h3>Hangi gün buluşalım?</h3></div><div class="calendar-icon">📅</div></div>
+  <p class="calendar-note">Müsait olduğun günü seç.</p>
+  <div class="days-grid">
+    <button class="day-card" data-day="Pazartesi"><span>Pazartesi</span><b>1</b></button>
+    <button class="day-card" data-day="Salı"><span>Salı</span><b>2</b></button>
+    <button class="day-card" data-day="Çarşamba"><span>Çarşamba</span><b>3</b></button>
+    <button class="day-card" data-day="Perşembe"><span>Perşembe</span><b>4</b></button>
+    <button class="day-card" data-day="Cuma"><span>Cuma</span><b>5</b></button>
+    <button class="day-card" data-day="Cumartesi"><span>Cumartesi</span><b>6</b></button>
+  </div>
+</div>
+<div id="bookingFormScreen" style="display:none">
+  <button type="button" class="back-btn" id="backToCalendar">← Gün seçimine dön</button>
+  <div class="booking-layout" style="margin-top:20px">
+    <div class="info-card"><h3>Randevu detayları</h3><p>Seçtiğin gün için bilgilerini doldur.</p></div>
+    <div class="form-card">
+      <form id="meetForm">
+        <input type="hidden" id="selectedDay" name="day">
+        <div><label>Ad Soyad</label><input name="name" type="text" placeholder="Adınız ve soyadınız" required></div>
+        <div><label>Buluşma nedeni</label><textarea name="reason" placeholder="Buluşma nedeniniz nedir?" required></textarea></div>
+        <div><label>Saat</label><input name="time" type="time" required></div>
+        <div><label>İletişim bilgisi</label><input name="contact" type="text" placeholder="Telefon / Instagram / E-posta" required></div>
+        <button class="submit" type="submit">Randevu Talebi Gönder</button>
+      </form>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="instagram">
+    <h2>Instagram'da @a.arslan1636</h2>
+    <p>Profil üzerinden de iletişim kurabilirsin.</p>
+    <a class="instagram-btn"
+       href="https://www.instagram.com/a.arslan1636/?hl=tr"
+       target="_blank">
+       Instagram Profilini Aç
+    </a>
+</section>
+
+<footer>
+    <div><strong>MeetTime</strong> · Hafta içi buluşma platformu</div>
+    <div>© 2026 MeetTime</div>
+</footer>
+
+<div class="modal" id="successModal">
+    <div class="modal-box">
+        <div class="check">✓</div>
+        <h3>Başvurun hazır!</h3>
+        <p>
+            Form bilgileri bu demo sayfasında alındı.
+            Gerçek randevu sistemi için bir sunucu/veritabanı bağlantısı gerekir.
+        </p>
+        <button class="close" onclick="closeModal()">Tamam</button>
+    </div>
+</div>
+
+
+<div class="queue-modal" id="queueModal">
+  <div class="queue-box">
+    <div class="queue-icon">📋</div>
+    <h3>Başvurunuz alındı</h3>
+    <p>Başvurunuz inceleniyor.</p>
+    <div class="queue-number">Sıra No: <strong id="queueNumber">001</strong></div>
+    <div class="queue-position">Sırada <strong id="queuePosition">1.</strong> sıradasınız.</div>
+    <button type="button" class="queue-close" id="queueClose">Tamam</button>
+  </div>
+</div>
+
+<script>
+const cal=document.getElementById("calendarScreen"), formScreen=document.getElementById("bookingFormScreen");
+document.querySelectorAll(".day-card").forEach(b=>b.onclick=()=>{document.getElementById("selectedDay").value=b.dataset.day;cal.style.display="none";formScreen.style.display="block";formScreen.scrollIntoView({behavior:"smooth"});});
+document.getElementById("backToCalendar").onclick=()=>{formScreen.style.display="none";cal.style.display="block";cal.scrollIntoView({behavior:"smooth"});};
+const meetForm = document.getElementById("meetForm");
+const queueModal = document.getElementById("queueModal");
+const queueClose = document.getElementById("queueClose");
+const queueNumber = document.getElementById("queueNumber");
+const queuePosition = document.getElementById("queuePosition");
+
+function getQueueNumber(){
+    const key = "meetTimeQueue";
+    let current = Number(localStorage.getItem(key) || "0") + 1;
+    localStorage.setItem(key, String(current));
+    return current;
+}
+
+meetForm.onsubmit = e => {
+    e.preventDefault();
+
+    const number = getQueueNumber();
+
+    queueNumber.textContent = String(number).padStart(3, "0");
+    queuePosition.textContent = number + ".";
+
+    queueModal.classList.add("show");
+
+    meetForm.reset();
+    document.getElementById("bookingFormScreen").style.display = "none";
+    document.getElementById("calendarScreen").style.display = "block";
+};
+
+queueClose.onclick = () => {
+    queueModal.classList.remove("show");
+};
+
+queueModal.addEventListener("click", e => {
+    if(e.target === queueModal) queueModal.classList.remove("show");
+});
+</script>
+
+</body>
+</html>
