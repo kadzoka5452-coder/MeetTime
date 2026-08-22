@@ -1,75 +1,165 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>MeetTime — Buluşmanı Planla</title>
 
+<!-- MEETTIME SITE ICON -->
+<link
+rel="icon"
+type="image/svg+xml"
+href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23090d0b'/%3E%3Cpath d='M22 70V30h10l18 25 18-25h10v40H67V48L50 72 33 48v22z' fill='%2339ff88'/%3E%3C/svg%3E"
+>
+
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
 :root{
-    --bg:#080b0a;
-    --panel:rgba(255,255,255,.055);
-    --panel-hover:rgba(255,255,255,.09);
-    --border:rgba(255,255,255,.10);
-    --text:#f5f3ff;
-    --muted:#969da0;
+
+    --bg:#080b09;
+
+    --panel:rgba(15,22,18,.68);
+
+    --panel2:rgba(255,255,255,.045);
+
+    --border:rgba(255,255,255,.09);
+
+    --text:#f4f7f5;
+
+    --muted:#89938e;
 
     --green:#39ff88;
+
     --green2:#20e67b;
+
+    --green3:#8affbb;
+
     --purple:#7c5cff;
-    --pink:#ff4d9d;
-    --orange:#ff9d45;
+
 }
 
+
+/* =========================================================
+   RESET
+========================================================= */
+
 *{
+
     margin:0;
     padding:0;
+
     box-sizing:border-box;
+
     cursor:none !important;
+
 }
 
 html{
+
     scroll-behavior:smooth;
+
 }
 
 body{
-    font-family:"DM Sans",Arial,sans-serif;
+
+    font-family:
+        "DM Sans",
+        Arial,
+        sans-serif;
+
     background:
-        radial-gradient(circle at 15% 10%,rgba(57,255,136,.10),transparent 25%),
-        radial-gradient(circle at 85% 25%,rgba(124,92,255,.12),transparent 25%),
-        radial-gradient(circle at 50% 90%,rgba(57,255,136,.07),transparent 30%),
+
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(57,255,136,.09),
+            transparent 25%
+        ),
+
+        radial-gradient(
+            circle at 85% 25%,
+            rgba(124,92,255,.10),
+            transparent 25%
+        ),
+
+        radial-gradient(
+            circle at 50% 90%,
+            rgba(57,255,136,.06),
+            transparent 30%
+        ),
+
         var(--bg);
+
     color:var(--text);
+
     min-height:100vh;
+
     overflow-x:hidden;
+
 }
 
 body::before{
+
     content:"";
+
     position:fixed;
+
     inset:0;
+
     pointer-events:none;
-    opacity:.20;
+
+    opacity:.17;
 
     background-image:
-        linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+
+        linear-gradient(
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        );
 
     background-size:45px 45px;
 
-    mask-image:linear-gradient(to bottom,black,transparent);
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent
+        );
+
 }
 
 a{
-    text-decoration:none;
+
     color:inherit;
+
+    text-decoration:none;
+
 }
 
-button,input,select,textarea{
+button,
+input,
+select,
+textarea{
+
     font:inherit;
+
 }
 
 
@@ -78,54 +168,503 @@ button,input,select,textarea{
 ========================================================= */
 
 .custom-cursor{
+
     position:fixed;
 
     left:0;
     top:0;
 
-    width:22px;
-    height:22px;
+    width:21px;
+    height:21px;
 
     border-radius:50%;
 
     background:#39ff88;
 
     box-shadow:
-        0 0 10px rgba(57,255,136,.9),
+
+        0 0 10px rgba(57,255,136,.95),
+
         0 0 25px rgba(57,255,136,.55),
+
         0 0 50px rgba(57,255,136,.25);
 
     pointer-events:none;
 
-    z-index:999999;
+    z-index:99999999;
 
     transform:
         translate(-50%,-50%)
         scale(1);
 
     transition:
-        transform .25s cubic-bezier(.2,.8,.2,1),
-        width .2s ease,
-        height .2s ease,
+
+        transform .25s
+        cubic-bezier(.2,.8,.2,1),
+
         box-shadow .25s ease,
+
         opacity .2s ease;
+
 }
 
 .custom-cursor.moving{
+
     transform:
         translate(-50%,-50%)
         scale(.45);
+
 }
 
 .custom-cursor.hover{
+
     transform:
         translate(-50%,-50%)
-        scale(1.65);
+        scale(1.55);
 
     box-shadow:
+
         0 0 15px rgba(57,255,136,1),
-        0 0 35px rgba(57,255,136,.7),
+
+        0 0 35px rgba(57,255,136,.75),
+
         0 0 70px rgba(57,255,136,.35);
+
+}
+
+
+/* =========================================================
+   LOADING SCREEN
+========================================================= */
+
+.loading-screen{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:999999999;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:
+
+        radial-gradient(
+            circle at center,
+            rgba(57,255,136,.08),
+            transparent 32%
+        ),
+
+        #060907;
+
+    opacity:1;
+
+    visibility:visible;
+
+    transition:
+
+        opacity .8s ease,
+
+        visibility .8s ease;
+
+}
+
+.loading-screen.hide{
+
+    opacity:0;
+
+    visibility:hidden;
+
+    pointer-events:none;
+
+}
+
+.loading-content{
+
+    width:min(
+        430px,
+        calc(100% - 40px)
+    );
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    text-align:center;
+
+}
+
+.loading-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
+
+    font-size:23px;
+
+    font-weight:700;
+
+    letter-spacing:-1px;
+
+    margin-bottom:45px;
+
+}
+
+.loading-logo-dot{
+
+    width:9px;
+    height:9px;
+
+    border-radius:50%;
+
+    background:#39ff88;
+
+    box-shadow:
+
+        0 0 12px #39ff88,
+
+        0 0 30px rgba(57,255,136,.65);
+
+    animation:
+        loadingPulse 1.2s
+        infinite ease-in-out;
+
+}
+
+@keyframes loadingPulse{
+
+    0%,100%{
+
+        transform:scale(.7);
+
+        opacity:.6;
+
+    }
+
+    50%{
+
+        transform:scale(1.25);
+
+        opacity:1;
+
+    }
+
+}
+
+.loading-orbit{
+
+    width:108px;
+    height:108px;
+
+    position:relative;
+
+    display:grid;
+
+    place-items:center;
+
+    margin-bottom:35px;
+
+}
+
+.orbit-ring{
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:50%;
+
+    border:
+
+        1px solid
+        rgba(57,255,136,.12);
+
+    border-top-color:#39ff88;
+
+    animation:
+        orbitRotate
+        1.2s
+        linear
+        infinite;
+
+}
+
+.orbit-ring::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:10px;
+
+    border-radius:50%;
+
+    border:
+
+        1px solid
+        rgba(124,92,255,.12);
+
+    border-bottom-color:#7c5cff;
+
+    animation:
+        orbitReverse
+        1.8s
+        linear
+        infinite;
+
+}
+
+@keyframes orbitRotate{
+
+    to{
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+@keyframes orbitReverse{
+
+    to{
+
+        transform:
+            rotate(-360deg);
+
+    }
+
+}
+
+.orbit-dot{
+
+    position:absolute;
+
+    width:7px;
+    height:7px;
+
+    top:-2px;
+
+    left:50%;
+
+    margin-left:-3.5px;
+
+    border-radius:50%;
+
+    background:#39ff88;
+
+    box-shadow:
+
+        0 0 12px #39ff88,
+
+        0 0 25px rgba(57,255,136,.7);
+
+    animation:
+        orbitDot
+        1.2s
+        linear
+        infinite;
+
+}
+
+@keyframes orbitDot{
+
+    to{
+
+        transform:
+            rotate(360deg);
+
+        transform-origin:
+            3.5px 56px;
+
+    }
+
+}
+
+.orbit-center{
+
+    width:49px;
+    height:49px;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:16px;
+
+    color:#39ff88;
+
+    background:
+        rgba(57,255,136,.055);
+
+    border:
+        1px solid
+        rgba(57,255,136,.17);
+
+    box-shadow:
+
+        0 0 35px
+        rgba(57,255,136,.08);
+
+    font-size:21px;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
+
+    font-weight:700;
+
+    animation:
+        centerPulse
+        1.5s
+        infinite
+        ease-in-out;
+
+}
+
+@keyframes centerPulse{
+
+    0%,100%{
+
+        transform:scale(.95);
+
+    }
+
+    50%{
+
+        transform:scale(1.05);
+
+    }
+
+}
+
+.loading-status{
+
+    min-height:24px;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#e9fff1;
+
+    animation:
+        statusFade
+        .35s
+        ease;
+
+}
+
+@keyframes statusFade{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(5px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:none;
+
+    }
+
+}
+
+.loading-sub{
+
+    margin-top:9px;
+
+    color:#58625d;
+
+    font-size:9px;
+
+    font-weight:800;
+
+    letter-spacing:4px;
+
+}
+
+.loading-progress{
+
+    width:100%;
+
+    height:3px;
+
+    margin-top:32px;
+
+    overflow:hidden;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.06);
+
+}
+
+#loadingProgress{
+
+    width:0%;
+
+    height:100%;
+
+    border-radius:999px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #20e67b,
+            #39ff88,
+            #7c5cff
+        );
+
+    box-shadow:
+        0 0 14px
+        rgba(57,255,136,.5);
+
+    transition:
+        width .1s linear;
+
+}
+
+.loading-percent{
+
+    width:100%;
+
+    margin-top:10px;
+
+    text-align:right;
+
+    color:#59635e;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
+
+    font-size:10px;
+
 }
 
 
@@ -134,49 +673,76 @@ button,input,select,textarea{
 ========================================================= */
 
 header{
-    width:min(1180px,calc(100% - 32px));
+
+    width:
+        min(
+            1180px,
+            calc(100% - 32px)
+        );
+
     height:72px;
 
     position:sticky;
+
     top:15px;
 
-    margin:15px auto 0;
+    margin:
+        15px auto 0;
 
     z-index:100;
 
     display:flex;
+
     align-items:center;
+
     justify-content:space-between;
 
-    padding:0 14px 0 22px;
+    padding:
+        0 14px 0 22px;
 
-    background:rgba(10,15,13,.76);
+    background:
+        rgba(10,15,13,.78);
 
-    backdrop-filter:blur(22px);
-    -webkit-backdrop-filter:blur(22px);
+    backdrop-filter:
+        blur(22px);
 
-    border:1px solid rgba(57,255,136,.12);
+    -webkit-backdrop-filter:
+        blur(22px);
+
+    border:
+        1px solid
+        rgba(57,255,136,.12);
 
     border-radius:20px;
 
     box-shadow:
-        0 15px 50px rgba(0,0,0,.20);
+        0 15px 50px
+        rgba(0,0,0,.20);
+
 }
 
 .logo{
-    font-family:"Space Grotesk",sans-serif;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
 
     font-size:22px;
+
     font-weight:700;
 
     letter-spacing:-1px;
 
     display:flex;
+
     align-items:center;
+
     gap:10px;
+
 }
 
 .logo::before{
+
     content:"";
 
     width:9px;
@@ -187,6 +753,7 @@ header{
     border-radius:50%;
 
     background:
+
         linear-gradient(
             135deg,
             #39ff88,
@@ -195,45 +762,60 @@ header{
         );
 
     box-shadow:
-        0 0 10px rgba(57,255,136,.9),
-        0 0 22px rgba(57,255,136,.45);
+
+        0 0 10px
+        rgba(57,255,136,.9),
+
+        0 0 22px
+        rgba(57,255,136,.45);
 
     transition:.3s;
+
 }
 
 .logo:hover::before{
+
     transform:scale(1.4);
 
-    box-shadow:
-        0 0 15px rgba(57,255,136,1),
-        0 0 30px rgba(57,255,136,.6);
 }
 
 nav{
+
     display:flex;
+
     align-items:center;
+
     gap:6px;
+
 }
 
 nav a{
-    padding:10px 14px;
+
+    padding:
+        10px 14px;
 
     border-radius:12px;
 
-    color:#a9b0b0;
+    color:#a3ada8;
 
     font-size:13px;
+
     font-weight:600;
 
     transition:.25s ease;
+
 }
 
 nav a:hover{
+
     color:#39ff88;
 
-    background:rgba(57,255,136,.06);
+    background:
+        rgba(57,255,136,.06);
 
-    transform:translateY(-2px);
+    transform:
+        translateY(-2px);
+
 }
 
 
@@ -242,18 +824,24 @@ nav a:hover{
 ========================================================= */
 
 .hero{
+
     min-height:680px;
 
     display:flex;
+
     align-items:center;
+
     justify-content:center;
 
-    padding:100px 20px 80px;
+    padding:
+        100px 20px 80px;
 
     position:relative;
+
 }
 
 .hero-inner{
+
     max-width:920px;
 
     text-align:center;
@@ -261,33 +849,41 @@ nav a:hover{
     position:relative;
 
     z-index:2;
+
 }
 
 .badge{
+
     display:inline-flex;
+
     align-items:center;
+
     gap:8px;
 
-    padding:9px 15px;
+    padding:
+        9px 15px;
 
     border-radius:999px;
 
     font-size:11px;
+
     font-weight:800;
 
     letter-spacing:1.5px;
 
     color:#baffd2;
 
-    background:rgba(57,255,136,.055);
+    background:
+        rgba(57,255,136,.055);
 
-    border:1px solid rgba(57,255,136,.22);
+    border:
+        1px solid
+        rgba(57,255,136,.22);
 
-    box-shadow:
-        0 0 25px rgba(57,255,136,.04);
 }
 
 .badge::before{
+
     content:"";
 
     width:7px;
@@ -297,48 +893,74 @@ nav a:hover{
 
     background:#39ff88;
 
-    box-shadow:0 0 12px #39ff88;
+    box-shadow:
+        0 0 12px #39ff88;
+
 }
 
 .hero h1{
-    font-family:"Space Grotesk",sans-serif;
 
-    font-size:clamp(52px,8vw,104px);
+    font-family:
+        "Space Grotesk",
+        sans-serif;
+
+    font-size:
+        clamp(
+            52px,
+            8vw,
+            104px
+        );
 
     line-height:.93;
 
     letter-spacing:-6px;
 
-    margin:28px 0 25px;
+    margin:
+        28px 0 25px;
+
 }
 
 .gradient{
+
     background:
+
         linear-gradient(
             90deg,
             #39ff88,
             #52f3a0,
-            #8affbc,
+            #8affbb,
             #7c5cff
         );
 
     background-size:200% auto;
 
     -webkit-background-clip:text;
+
     background-clip:text;
 
     color:transparent;
 
-    animation:gradientMove 5s linear infinite;
+    animation:
+        gradientMove
+        5s
+        linear
+        infinite;
+
 }
 
 @keyframes gradientMove{
+
     to{
-        background-position:200% center;
+
+        background-position:
+            200% center;
+
     }
+
 }
 
 .hero p{
+
     max-width:620px;
 
     margin:auto;
@@ -348,6 +970,7 @@ nav a:hover{
     font-size:17px;
 
     line-height:1.8;
+
 }
 
 
@@ -356,15 +979,19 @@ nav a:hover{
 ========================================================= */
 
 .hero-buttons{
+
     margin-top:35px;
 
     display:flex;
+
     justify-content:center;
+
     align-items:center;
 
     gap:12px;
 
     flex-wrap:wrap;
+
 }
 
 .btn,
@@ -372,26 +999,31 @@ nav a:hover{
 .instagram-btn,
 .how-close,
 .close{
+
     position:relative;
 
     border:0;
 
-    cursor:none;
+    transition:
+        .3s
+        cubic-bezier(.2,.8,.2,1);
 
-    transition:.3s cubic-bezier(.2,.8,.2,1);
 }
 
 .primary,
 .submit,
 .how-close{
+
     display:inline-flex;
 
     align-items:center;
+
     justify-content:center;
 
     gap:12px;
 
-    padding:15px 22px;
+    padding:
+        15px 22px;
 
     border-radius:14px;
 
@@ -402,6 +1034,7 @@ nav a:hover{
     font-size:14px;
 
     background:
+
         linear-gradient(
             135deg,
             #39ff88,
@@ -410,83 +1043,118 @@ nav a:hover{
         );
 
     box-shadow:
-        0 12px 35px rgba(57,255,136,.18);
+
+        0 12px 35px
+        rgba(57,255,136,.20);
+
 }
 
 .primary::after{
+
     content:"→";
 
     font-size:20px;
 
     transition:.3s;
+
 }
 
 .primary:hover::after{
-    transform:translateX(5px);
+
+    transform:
+        translateX(5px);
+
 }
 
 .primary:hover,
 .submit:hover,
 .how-close:hover{
-    transform:translateY(-4px);
+
+    transform:
+        translateY(-4px);
 
     box-shadow:
-        0 20px 45px rgba(57,255,136,.28);
+
+        0 20px 45px
+        rgba(57,255,136,.30);
+
 }
 
 .secondary{
-    padding:14px 18px;
+
+    padding:
+        14px 18px;
 
     border-radius:14px;
 
-    color:#c9d0ce;
+    color:#c5ceca;
 
-    background:rgba(255,255,255,.045);
+    background:
+        rgba(255,255,255,.045);
 
-    border:1px solid rgba(57,255,136,.12);
+    border:
+        1px solid
+        rgba(57,255,136,.12);
 
     font-size:13px;
+
     font-weight:700;
+
 }
 
 .secondary:hover{
-    background:rgba(57,255,136,.08);
+
+    background:
+        rgba(57,255,136,.08);
 
     color:#39ff88;
 
-    transform:translateY(-3px);
+    transform:
+        translateY(-3px);
 
-    border-color:rgba(57,255,136,.3);
+    border-color:
+        rgba(57,255,136,.30);
+
 }
 
 .submit:disabled{
+
     opacity:.6;
 
-    cursor:not-allowed !important;
-
     transform:none;
+
 }
 
 
 /* =========================================================
-   SECTION
+   SECTIONS
 ========================================================= */
 
 .section{
-    width:min(1100px,calc(100% - 32px));
+
+    width:
+        min(
+            1100px,
+            calc(100% - 32px)
+        );
 
     margin:auto;
 
-    padding:90px 0;
+    padding:
+        90px 0;
+
 }
 
 .section-title{
+
     text-align:center;
 
     margin-bottom:45px;
+
 }
 
 .section-title span{
+
     display:inline-block;
 
     color:#79ffa9;
@@ -496,16 +1164,26 @@ nav a:hover{
     letter-spacing:4px;
 
     font-weight:800;
+
 }
 
 .section-title h2{
-    font-family:"Space Grotesk",sans-serif;
 
-    font-size:clamp(38px,5vw,58px);
+    font-family:
+        "Space Grotesk",
+        sans-serif;
+
+    font-size:
+        clamp(
+            38px,
+            5vw,
+            58px
+        );
 
     letter-spacing:-3px;
 
     margin-top:10px;
+
 }
 
 
@@ -514,25 +1192,33 @@ nav a:hover{
 ========================================================= */
 
 .calendar-card{
+
     position:relative;
 
     overflow:hidden;
 
     padding:34px;
 
-    background:rgba(13,20,17,.68);
+    background:
+        rgba(13,20,17,.68);
 
-    border:1px solid rgba(57,255,136,.11);
+    border:
+        1px solid
+        rgba(57,255,136,.11);
 
     border-radius:28px;
 
-    backdrop-filter:blur(20px);
+    backdrop-filter:
+        blur(20px);
 
     box-shadow:
-        0 30px 80px rgba(0,0,0,.18);
+        0 30px 80px
+        rgba(0,0,0,.18);
+
 }
 
 .calendar-card::before{
+
     content:"";
 
     position:absolute;
@@ -542,17 +1228,21 @@ nav a:hover{
 
     border-radius:50%;
 
-    background:rgba(57,255,136,.08);
+    background:
+        rgba(57,255,136,.08);
 
     filter:blur(80px);
 
     right:-150px;
+
     top:-250px;
 
     pointer-events:none;
+
 }
 
 .calendar-head{
+
     display:flex;
 
     justify-content:space-between;
@@ -560,9 +1250,11 @@ nav a:hover{
     align-items:center;
 
     position:relative;
+
 }
 
 .calendar-head small{
+
     color:#7dffa9;
 
     letter-spacing:3px;
@@ -570,23 +1262,30 @@ nav a:hover{
     font-size:10px;
 
     font-weight:800;
+
 }
 
 .calendar-head h3{
-    font-family:"Space Grotesk",sans-serif;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
 
     font-size:30px;
 
     letter-spacing:-1.5px;
 
     margin-top:7px;
+
 }
 
 .calendar-icon{
+
     width:55px;
     height:55px;
 
     display:grid;
+
     place-items:center;
 
     border-radius:18px;
@@ -595,29 +1294,37 @@ nav a:hover{
 
     color:#39ff88;
 
-    background:rgba(57,255,136,.055);
+    background:
+        rgba(57,255,136,.055);
 
-    border:1px solid rgba(57,255,136,.16);
+    border:
+        1px solid
+        rgba(57,255,136,.16);
 
-    box-shadow:
-        0 0 25px rgba(57,255,136,.05);
 }
 
 .calendar-note{
+
     color:var(--muted);
 
-    margin:20px 0 28px;
+    margin:
+        20px 0 28px;
+
 }
 
 .days-grid{
+
     display:grid;
 
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:
+        repeat(3,1fr);
 
     gap:14px;
+
 }
 
 .day-card{
+
     min-height:145px;
 
     position:relative;
@@ -630,18 +1337,23 @@ nav a:hover{
 
     border-radius:22px;
 
-    border:1px solid rgba(255,255,255,.09);
+    border:
+        1px solid
+        rgba(255,255,255,.09);
 
     color:white;
 
-    background:rgba(255,255,255,.035);
+    background:
+        rgba(255,255,255,.035);
 
-    cursor:none !important;
+    transition:
+        .35s
+        cubic-bezier(.2,.8,.2,1);
 
-    transition:.35s cubic-bezier(.2,.8,.2,1);
 }
 
 .day-card::before{
+
     content:"";
 
     position:absolute;
@@ -649,6 +1361,7 @@ nav a:hover{
     inset:0;
 
     background:
+
         linear-gradient(
             135deg,
             rgba(57,255,136,.13),
@@ -659,84 +1372,61 @@ nav a:hover{
     opacity:0;
 
     transition:.3s;
+
 }
 
 .day-card span,
 .day-card b{
+
     position:relative;
 
     z-index:1;
 
     display:block;
+
 }
 
 .day-card span{
+
     color:#9ca6a2;
 
     font-size:13px;
 
     font-weight:700;
+
 }
 
 .day-card b{
+
     margin-top:28px;
 
-    font-family:"Space Grotesk",sans-serif;
+    font-family:
+        "Space Grotesk",
+        sans-serif;
 
     font-size:40px;
 
-    color:white;
 }
 
 .day-card:hover{
-    transform:translateY(-8px);
 
-    border-color:rgba(57,255,136,.4);
+    transform:
+        translateY(-8px);
+
+    border-color:
+        rgba(57,255,136,.40);
 
     box-shadow:
-        0 20px 40px rgba(0,0,0,.28),
-        0 0 30px rgba(57,255,136,.05);
+
+        0 20px 40px
+        rgba(0,0,0,.28);
+
 }
 
 .day-card:hover::before{
+
     opacity:1;
-}
 
-
-/* =========================================================
-   BACK BUTTON
-========================================================= */
-
-.back-btn{
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:9px;
-
-    padding:12px 17px;
-
-    border-radius:999px;
-
-    color:#b9c0bd;
-
-    background:rgba(255,255,255,.04);
-
-    border:1px solid rgba(57,255,136,.12);
-
-    cursor:none !important;
-
-    font-weight:700;
-
-    transition:.25s;
-}
-
-.back-btn:hover{
-    color:#39ff88;
-
-    transform:translateX(-5px);
-
-    background:rgba(57,255,136,.06);
 }
 
 
@@ -744,70 +1434,132 @@ nav a:hover{
    BOOKING
 ========================================================= */
 
+.back-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    padding:
+        12px 17px;
+
+    border-radius:999px;
+
+    color:#b9c0bd;
+
+    background:
+        rgba(255,255,255,.04);
+
+    border:
+        1px solid
+        rgba(57,255,136,.12);
+
+    font-weight:700;
+
+    transition:.25s;
+
+}
+
+.back-btn:hover{
+
+    color:#39ff88;
+
+    transform:
+        translateX(-5px);
+
+}
+
 .booking-layout{
+
     display:grid;
 
-    grid-template-columns:.75fr 1.25fr;
+    grid-template-columns:
+        .75fr 1.25fr;
 
     gap:22px;
+
 }
 
 .info-card,
 .form-card{
-    background:rgba(13,20,17,.68);
 
-    border:1px solid rgba(57,255,136,.11);
+    background:
+        rgba(13,20,17,.68);
+
+    border:
+        1px solid
+        rgba(57,255,136,.11);
 
     border-radius:28px;
 
     padding:30px;
 
-    backdrop-filter:blur(20px);
+    backdrop-filter:
+        blur(20px);
+
 }
 
 .info-card{
+
     min-height:250px;
+
 }
 
 .info-card::before{
+
     content:"01";
 
     display:block;
 
-    font-family:"Space Grotesk",sans-serif;
+    font-family:
+        "Space Grotesk",
+        sans-serif;
 
     font-size:52px;
 
     font-weight:700;
 
-    color:rgba(57,255,136,.06);
+    color:
+        rgba(57,255,136,.06);
 
     margin-bottom:10px;
+
 }
 
 .info-card h3{
-    font-family:"Space Grotesk",sans-serif;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
 
     font-size:25px;
 
     letter-spacing:-1px;
+
 }
 
 .info-card p{
+
     margin-top:10px;
 
     color:var(--muted);
 
     font-size:14px;
+
 }
 
 form{
+
     display:grid;
 
     gap:17px;
+
 }
 
 label{
+
     display:block;
 
     margin-bottom:8px;
@@ -821,64 +1573,83 @@ label{
     color:#9fa8a4;
 
     font-weight:800;
+
 }
 
 input,
 select,
 textarea{
+
     width:100%;
 
     outline:none;
 
     color:white;
 
-    background:rgba(255,255,255,.045);
+    background:
+        rgba(255,255,255,.045);
 
-    border:1px solid rgba(255,255,255,.09);
+    border:
+        1px solid
+        rgba(255,255,255,.09);
 
     border-radius:15px;
 
-    padding:14px 15px;
-
-    cursor:none !important;
+    padding:
+        14px 15px;
 
     transition:.25s;
+
 }
 
 input::placeholder,
 textarea::placeholder{
+
     color:#676f6c;
+
 }
 
 select option{
+
     background:#121916;
 
     color:white;
+
 }
 
 textarea{
+
     min-height:115px;
 
     resize:vertical;
+
 }
 
 input:focus,
 select:focus,
 textarea:focus{
-    border-color:rgba(57,255,136,.65);
 
-    background:rgba(57,255,136,.035);
+    border-color:
+        rgba(57,255,136,.65);
+
+    background:
+        rgba(57,255,136,.035);
 
     box-shadow:
-        0 0 0 4px rgba(57,255,136,.07);
+
+        0 0 0 4px
+        rgba(57,255,136,.07);
+
 }
 
 .submit{
+
     width:100%;
 
     margin-top:5px;
 
     min-height:52px;
+
 }
 
 
@@ -887,50 +1658,72 @@ textarea:focus{
 ========================================================= */
 
 .instagram{
-    width:min(1100px,calc(100% - 32px));
 
-    margin:30px auto 90px;
+    width:
+        min(
+            1100px,
+            calc(100% - 32px)
+        );
 
-    padding:55px 30px;
+    margin:
+        30px auto 90px;
+
+    padding:
+        55px 30px;
 
     text-align:center;
 
     border-radius:32px;
 
-    border:1px solid rgba(57,255,136,.11);
+    border:
+        1px solid
+        rgba(57,255,136,.11);
 
     background:
+
         radial-gradient(
             circle at center,
             rgba(57,255,136,.10),
             transparent 50%
         ),
+
         rgba(13,20,17,.68);
+
 }
 
 .instagram h2{
-    font-family:"Space Grotesk",sans-serif;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
 
     font-size:48px;
 
     letter-spacing:-2px;
+
 }
 
 .instagram p{
+
     color:var(--muted);
 
-    margin:10px 0 25px;
+    margin:
+        10px 0 25px;
+
 }
 
 .instagram-btn{
+
     display:inline-flex;
 
     align-items:center;
+
     justify-content:center;
 
     margin:5px;
 
-    padding:14px 20px;
+    padding:
+        14px 20px;
 
     border-radius:14px;
 
@@ -940,17 +1733,25 @@ textarea:focus{
 
     font-weight:800;
 
-    background:rgba(255,255,255,.06);
+    background:
+        rgba(255,255,255,.06);
 
-    border:1px solid rgba(57,255,136,.12);
+    border:
+        1px solid
+        rgba(57,255,136,.12);
+
 }
 
 .instagram-btn:hover{
-    transform:translateY(-4px) rotate(-1deg);
+
+    transform:
+        translateY(-4px)
+        rotate(-1deg);
 
     color:#061009;
 
     background:
+
         linear-gradient(
             135deg,
             #39ff88,
@@ -958,7 +1759,9 @@ textarea:focus{
             #7c5cff
         );
 
-    border-color:transparent;
+    border-color:
+        transparent;
+
 }
 
 
@@ -967,9 +1770,15 @@ textarea:focus{
 ========================================================= */
 
 footer{
-    width:min(1180px,calc(100% - 32px));
 
-    margin:0 auto 25px;
+    width:
+        min(
+            1180px,
+            calc(100% - 32px)
+        );
+
+    margin:
+        0 auto 25px;
 
     display:flex;
 
@@ -977,15 +1786,20 @@ footer{
 
     padding:25px;
 
-    border-top:1px solid rgba(57,255,136,.10);
+    border-top:
+        1px solid
+        rgba(57,255,136,.10);
 
     color:#6e7773;
 
     font-size:12px;
+
 }
 
 footer strong{
+
     color:#dce7e1;
+
 }
 
 
@@ -995,6 +1809,7 @@ footer strong{
 
 .modal,
 .how-modal{
+
     position:fixed;
 
     inset:0;
@@ -1002,25 +1817,36 @@ footer strong{
     display:none;
 
     align-items:center;
+
     justify-content:center;
 
     padding:20px;
 
     z-index:999;
 
-    background:rgba(0,0,0,.65);
+    background:
+        rgba(0,0,0,.65);
 
-    backdrop-filter:blur(10px);
+    backdrop-filter:
+        blur(10px);
+
 }
 
 .modal.show,
 .how-modal.show{
+
     display:flex;
+
 }
 
 .modal-box,
 .how-modal-box{
-    width:min(540px,100%);
+
+    width:
+        min(
+            540px,
+            100%
+        );
 
     position:relative;
 
@@ -1028,40 +1854,62 @@ footer strong{
 
     border-radius:28px;
 
-    border:1px solid rgba(57,255,136,.14);
+    border:
+        1px solid
+        rgba(57,255,136,.14);
 
     background:#101714;
 
     box-shadow:
-        0 30px 100px rgba(0,0,0,.5);
-    
-    animation:popup .3s cubic-bezier(.2,.8,.2,1);
+        0 30px 100px
+        rgba(0,0,0,.5);
+
+    animation:
+        popup
+        .3s
+        cubic-bezier(.2,.8,.2,1);
+
 }
 
 @keyframes popup{
+
     from{
+
         opacity:0;
-        transform:translateY(20px) scale(.96);
+
+        transform:
+            translateY(20px)
+            scale(.96);
+
     }
 
     to{
+
         opacity:1;
+
         transform:none;
+
     }
+
 }
 
 .modal-box{
+
     text-align:center;
+
 }
 
 .check{
+
     width:62px;
     height:62px;
 
     display:grid;
+
     place-items:center;
 
-    margin:0 auto 18px;
+    margin:
+        0 auto 18px;
 
     border-radius:22px;
 
@@ -1079,55 +1927,75 @@ footer strong{
     font-weight:800;
 
     box-shadow:
-        0 15px 35px rgba(57,255,136,.18);
+        0 15px 35px
+        rgba(57,255,136,.18);
+
 }
 
 .modal-box h3,
 .how-modal-box h3{
-    font-family:"Space Grotesk",sans-serif;
+
+    font-family:
+        "Space Grotesk",
+        sans-serif;
 
     font-size:27px;
 
     letter-spacing:-1px;
+
 }
 
 .modal-box p,
 .how-modal-box p{
+
     color:var(--muted);
 
     line-height:1.7;
 
-    margin:10px 0 22px;
+    margin:
+        10px 0 22px;
+
 }
 
 .close{
-    padding:12px 25px;
+
+    padding:
+        12px 25px;
 
     border-radius:13px;
 
     color:white;
 
-    background:rgba(255,255,255,.09);
+    background:
+        rgba(255,255,255,.09);
+
 }
 
 .close:hover{
-    background:rgba(57,255,136,.10);
+
+    background:
+        rgba(57,255,136,.10);
 
     color:#39ff88;
 
-    transform:translateY(-3px);
+    transform:
+        translateY(-3px);
+
 }
 
 .how-icon{
+
     width:55px;
     height:55px;
 
     display:grid;
+
     place-items:center;
 
     border-radius:18px;
 
     background:
+
         linear-gradient(
             135deg,
             #39ff88,
@@ -1142,17 +2010,22 @@ footer strong{
     font-weight:800;
 
     margin-bottom:15px;
+
 }
 
 .how-steps{
+
     display:grid;
 
     gap:10px;
 
-    margin:20px 0;
+    margin:
+        20px 0;
+
 }
 
 .how-step{
+
     display:flex;
 
     gap:14px;
@@ -1161,159 +2034,294 @@ footer strong{
 
     border-radius:17px;
 
-    border:1px solid rgba(255,255,255,.08);
+    border:
+        1px solid
+        rgba(255,255,255,.08);
 
-    background:rgba(255,255,255,.035);
+    background:
+        rgba(255,255,255,.035);
 
     color:#aaa7b8;
 
     font-size:13px;
 
     line-height:1.6;
+
 }
 
 .how-step b{
+
     color:#39ff88;
 
     font-size:16px;
+
 }
 
 .how-step strong{
+
     color:white;
+
 }
 
 .how-x{
+
     position:absolute;
 
     right:18px;
+
     top:18px;
 
     width:37px;
     height:37px;
 
-    border:1px solid rgba(57,255,136,.12);
+    border:
+        1px solid
+        rgba(57,255,136,.12);
 
     border-radius:50%;
 
-    background:rgba(255,255,255,.06);
+    background:
+        rgba(255,255,255,.06);
 
     color:white;
-
-    cursor:none !important;
 
     font-size:20px;
 
     transition:.2s;
+
 }
 
 .how-x:hover{
-    transform:rotate(90deg);
+
+    transform:
+        rotate(90deg);
 
     color:#39ff88;
 
-    background:rgba(57,255,136,.10);
+    background:
+        rgba(57,255,136,.10);
+
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   MOBILE
 ========================================================= */
 
 @media(max-width:800px){
 
     *{
+
         cursor:auto !important;
+
     }
 
     .custom-cursor{
+
         display:none;
+
     }
 
     header{
-        width:calc(100% - 20px);
+
+        width:
+            calc(100% - 20px);
 
         top:8px;
 
         margin-top:8px;
+
     }
 
     nav{
+
         display:none;
+
     }
 
     .hero{
+
         min-height:600px;
 
         padding-top:80px;
+
     }
 
     .hero h1{
+
         letter-spacing:-4px;
+
     }
 
     .days-grid{
-        grid-template-columns:repeat(2,1fr);
+
+        grid-template-columns:
+            repeat(2,1fr);
+
     }
 
     .booking-layout{
+
         grid-template-columns:1fr;
+
     }
 
     footer{
+
         flex-direction:column;
 
         gap:10px;
 
         text-align:center;
+
     }
+
 }
 
 @media(max-width:500px){
 
     .hero-buttons{
+
         flex-direction:column;
 
         align-items:stretch;
+
     }
 
     .hero-buttons .btn{
+
         width:100%;
+
     }
 
     .calendar-card,
     .form-card,
     .info-card{
+
         padding:22px;
 
         border-radius:23px;
+
     }
 
     .calendar-head h3{
+
         font-size:23px;
+
     }
 
     .day-card{
+
         min-height:120px;
+
     }
 
     .instagram h2{
+
         font-size:38px;
+
     }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
-<!-- CUSTOM CURSOR -->
-<div class="custom-cursor" id="customCursor"></div>
 
+<!-- =====================================================
+     LOADING
+===================================================== -->
+
+<div
+    class="loading-screen"
+    id="loadingScreen"
+>
+
+    <div class="loading-content">
+
+        <div class="loading-logo">
+
+            <span
+                class="loading-logo-dot"
+            ></span>
+
+            MeetTime
+
+        </div>
+
+
+        <div class="loading-orbit">
+
+            <div class="orbit-ring"></div>
+
+            <div class="orbit-dot"></div>
+
+            <div class="orbit-center">
+                M
+            </div>
+
+        </div>
+
+
+        <div
+            class="loading-status"
+            id="loadingStatus"
+        >
+            Veriler analiz ediliyor...
+        </div>
+
+
+        <div class="loading-sub">
+            MEETTIME SYSTEM
+        </div>
+
+
+        <div class="loading-progress">
+
+            <div
+                id="loadingProgress"
+            ></div>
+
+        </div>
+
+
+        <div
+            class="loading-percent"
+            id="loadingPercent"
+        >
+            0%
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CUSTOM CURSOR -->
+
+<div
+    class="custom-cursor"
+    id="customCursor"
+></div>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
 <header>
 
-    <a class="logo" href="#">
+    <a
+        class="logo"
+        href="#"
+    >
         MeetTime
     </a>
+
 
     <nav>
 
@@ -1344,6 +2352,10 @@ footer strong{
 </header>
 
 
+<!-- =====================================================
+     HERO
+===================================================== -->
+
 <section class="hero">
 
     <div class="hero-inner">
@@ -1352,18 +2364,25 @@ footer strong{
             HAFTA İÇİ BULUŞMA SİSTEMİ
         </div>
 
+
         <h1>
+
             Bir gün seç.<br>
 
             <span class="gradient">
                 Planı başlat.
             </span>
+
         </h1>
 
+
         <p>
+
             MeetTime üzerinden buluşma talebini oluştur.
             Gününü seç, bilgilerini gir ve talebini gönder.
+
         </p>
+
 
         <div class="hero-buttons">
 
@@ -1374,6 +2393,7 @@ footer strong{
                 Randevu Oluştur
             </a>
 
+
             <a
                 href="https://www.instagram.com/a.arslan1636/?hl=tr"
                 target="_blank"
@@ -1381,6 +2401,7 @@ footer strong{
             >
                 Instagram · Arslan
             </a>
+
 
             <a
                 href="https://www.instagram.com/kadzoka11/"
@@ -1396,6 +2417,10 @@ footer strong{
 
 </section>
 
+
+<!-- =====================================================
+     BOOKING
+===================================================== -->
 
 <section
     class="section"
@@ -1434,15 +2459,20 @@ footer strong{
 
             </div>
 
+
             <div class="calendar-icon">
                 ✦
             </div>
 
         </div>
 
+
         <p class="calendar-note">
+
             Müsait olduğun günü seçerek devam et.
+
         </p>
+
 
         <div class="days-grid">
 
@@ -1450,6 +2480,7 @@ footer strong{
                 class="day-card"
                 data-day="Pazartesi"
             >
+
                 <span>
                     Pazartesi
                 </span>
@@ -1457,6 +2488,7 @@ footer strong{
                 <b>
                     01
                 </b>
+
             </button>
 
 
@@ -1464,6 +2496,7 @@ footer strong{
                 class="day-card"
                 data-day="Salı"
             >
+
                 <span>
                     Salı
                 </span>
@@ -1471,6 +2504,7 @@ footer strong{
                 <b>
                     02
                 </b>
+
             </button>
 
 
@@ -1478,6 +2512,7 @@ footer strong{
                 class="day-card"
                 data-day="Çarşamba"
             >
+
                 <span>
                     Çarşamba
                 </span>
@@ -1485,6 +2520,7 @@ footer strong{
                 <b>
                     03
                 </b>
+
             </button>
 
 
@@ -1492,6 +2528,7 @@ footer strong{
                 class="day-card"
                 data-day="Perşembe"
             >
+
                 <span>
                     Perşembe
                 </span>
@@ -1499,6 +2536,7 @@ footer strong{
                 <b>
                     04
                 </b>
+
             </button>
 
 
@@ -1506,6 +2544,7 @@ footer strong{
                 class="day-card"
                 data-day="Cuma"
             >
+
                 <span>
                     Cuma
                 </span>
@@ -1513,6 +2552,7 @@ footer strong{
                 <b>
                     05
                 </b>
+
             </button>
 
 
@@ -1520,6 +2560,7 @@ footer strong{
                 class="day-card"
                 data-day="Cumartesi"
             >
+
                 <span>
                     Cumartesi
                 </span>
@@ -1527,12 +2568,15 @@ footer strong{
                 <b>
                     06
                 </b>
+
             </button>
 
         </div>
 
     </div>
 
+
+    <!-- FORM -->
 
     <div
         id="bookingFormScreen"
@@ -1560,8 +2604,10 @@ footer strong{
                 </h3>
 
                 <p>
+
                     Seçtiğin gün için buluşma bilgilerini doldur.
                     Talebin gönderildikten sonra incelemeye alınır.
+
                 </p>
 
             </div>
@@ -1690,6 +2736,10 @@ footer strong{
 </section>
 
 
+<!-- =====================================================
+     INSTAGRAM
+===================================================== -->
+
 <section class="instagram">
 
     <h2>
@@ -1700,6 +2750,7 @@ footer strong{
         İstersen Instagram üzerinden de iletişime geçebilirsin.
     </p>
 
+
     <a
         class="instagram-btn"
         href="https://www.instagram.com/a.arslan1636/?hl=tr"
@@ -1707,6 +2758,7 @@ footer strong{
     >
         @a.arslan1636 ↗
     </a>
+
 
     <a
         class="instagram-btn"
@@ -1719,24 +2771,35 @@ footer strong{
 </section>
 
 
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
 <footer>
 
     <div>
+
         <strong>
             MeetTime
         </strong>
 
         · Hafta içi buluşma platformu
+
     </div>
 
+
     <div>
+
         © 2026 MeetTime
+
     </div>
 
 </footer>
 
 
-<!-- NASIL ÇALIŞIR MODAL -->
+<!-- =====================================================
+     HOW IT WORKS
+===================================================== -->
 
 <div
     class="how-modal"
@@ -1759,25 +2822,27 @@ footer strong{
             ×
         </button>
 
+
         <div class="how-icon">
             ?
         </div>
+
 
         <h3 id="howTitle">
             MeetTime nasıl çalışır?
         </h3>
 
+
         <p>
             Buluşma talebi oluşturmak sadece birkaç adım sürer.
         </p>
+
 
         <div class="how-steps">
 
             <div class="how-step">
 
-                <b>
-                    01
-                </b>
+                <b>01</b>
 
                 <span>
 
@@ -1796,9 +2861,7 @@ footer strong{
 
             <div class="how-step">
 
-                <b>
-                    02
-                </b>
+                <b>02</b>
 
                 <span>
 
@@ -1817,9 +2880,7 @@ footer strong{
 
             <div class="how-step">
 
-                <b>
-                    03
-                </b>
+                <b>03</b>
 
                 <span>
 
@@ -1838,9 +2899,7 @@ footer strong{
 
             <div class="how-step">
 
-                <b>
-                    04
-                </b>
+                <b>04</b>
 
                 <span>
 
@@ -1858,6 +2917,7 @@ footer strong{
 
         </div>
 
+
         <button
             class="how-close"
             id="howClose"
@@ -1870,7 +2930,9 @@ footer strong{
 </div>
 
 
-<!-- SUCCESS MODAL -->
+<!-- =====================================================
+     SUCCESS MODAL
+===================================================== -->
 
 <div
     class="modal"
@@ -1886,13 +2948,16 @@ footer strong{
             ✓
         </div>
 
+
         <h3 id="modalTitle">
             Başvurunuz alındı
         </h3>
 
+
         <p id="modalMessage">
             Başvurunuz inceleniyor 🧐
         </p>
+
 
         <button
             class="close"
@@ -1909,6 +2974,170 @@ footer strong{
 <script>
 
 /* =========================================================
+   10 SECOND LOADING
+========================================================= */
+
+const loadingScreen =
+    document.getElementById(
+        "loadingScreen"
+    );
+
+const loadingProgress =
+    document.getElementById(
+        "loadingProgress"
+    );
+
+const loadingPercent =
+    document.getElementById(
+        "loadingPercent"
+    );
+
+const loadingStatus =
+    document.getElementById(
+        "loadingStatus"
+    );
+
+
+const loadingMessages = [
+
+    "Veriler analiz ediliyor...",
+
+    "Yakındaki kullanıcılar taranıyor...",
+
+    "Bellek boşaltılıyor...",
+
+    "Bağlantılar kontrol ediliyor...",
+
+    "MeetTime sistemi hazırlanıyor...",
+
+    "Randevu sistemi başlatılıyor...",
+
+    "Arayüz optimize ediliyor...",
+
+    "Son kontroller yapılıyor...",
+
+    "Hazır."
+
+];
+
+
+const loadingDuration =
+    10000;
+
+const loadingStart =
+    Date.now();
+
+let lastMessage = -1;
+
+
+const loadingInterval =
+    setInterval(
+
+        () => {
+
+            const elapsed =
+                Date.now()
+                - loadingStart;
+
+
+            const progress =
+                Math.min(
+                    elapsed /
+                    loadingDuration,
+                    1
+                );
+
+
+            const percent =
+                Math.floor(
+                    progress * 100
+                );
+
+
+            loadingProgress.style.width =
+                percent + "%";
+
+
+            loadingPercent.textContent =
+                percent + "%";
+
+
+            const messageIndex =
+                Math.min(
+
+                    Math.floor(
+                        progress *
+                        loadingMessages.length
+                    ),
+
+                    loadingMessages.length - 1
+
+                );
+
+
+            if(
+                messageIndex !==
+                lastMessage
+            ){
+
+                lastMessage =
+                    messageIndex;
+
+
+                loadingStatus.style.animation =
+                    "none";
+
+
+                void loadingStatus.offsetWidth;
+
+
+                loadingStatus.style.animation =
+                    "statusFade .35s ease";
+
+
+                loadingStatus.textContent =
+                    loadingMessages[
+                        messageIndex
+                    ];
+
+            }
+
+
+            if(progress >= 1){
+
+                clearInterval(
+                    loadingInterval
+                );
+
+
+                loadingStatus.textContent =
+                    "Hazır.";
+
+
+                setTimeout(
+
+                    () => {
+
+                        loadingScreen.classList.add(
+                            "hide"
+                        );
+
+                    },
+
+                    350
+
+                );
+
+            }
+
+        },
+
+        50
+
+    );
+
+
+/* =========================================================
    API
 ========================================================= */
 
@@ -1917,29 +3146,43 @@ const API_URL =
 
 
 /* =========================================================
-   ELEMENTLER
+   ELEMENTS
 ========================================================= */
 
 const cal =
-    document.getElementById("calendarScreen");
+    document.getElementById(
+        "calendarScreen"
+    );
 
 const formScreen =
-    document.getElementById("bookingFormScreen");
+    document.getElementById(
+        "bookingFormScreen"
+    );
 
 const form =
-    document.getElementById("meetForm");
+    document.getElementById(
+        "meetForm"
+    );
 
 const modal =
-    document.getElementById("successModal");
+    document.getElementById(
+        "successModal"
+    );
 
 const modalTitle =
-    document.getElementById("modalTitle");
+    document.getElementById(
+        "modalTitle"
+    );
 
 const modalMessage =
-    document.getElementById("modalMessage");
+    document.getElementById(
+        "modalMessage"
+    );
 
 const modalIcon =
-    document.getElementById("modalIcon");
+    document.getElementById(
+        "modalIcon"
+    );
 
 
 /* =========================================================
@@ -1947,13 +3190,16 @@ const modalIcon =
 ========================================================= */
 
 const customCursor =
-    document.getElementById("customCursor");
+    document.getElementById(
+        "customCursor"
+    );
 
 let cursorTimer;
 
+
 document.addEventListener(
     "mousemove",
-    (event) => {
+    event => {
 
         customCursor.style.left =
             event.clientX + "px";
@@ -1961,14 +3207,20 @@ document.addEventListener(
         customCursor.style.top =
             event.clientY + "px";
 
+
         customCursor.classList.add(
             "moving"
         );
 
-        clearTimeout(cursorTimer);
+
+        clearTimeout(
+            cursorTimer
+        );
+
 
         cursorTimer =
             setTimeout(
+
                 () => {
 
                     customCursor.classList.remove(
@@ -1976,14 +3228,14 @@ document.addEventListener(
                     );
 
                 },
+
                 130
+
             );
 
     }
 );
 
-
-/* Cursor hover */
 
 function setupCursorHover(){
 
@@ -1991,35 +3243,38 @@ function setupCursorHover(){
     .querySelectorAll(
         "a, button, input, select, textarea"
     )
-    .forEach(element => {
+    .forEach(
+        element => {
 
-        element.addEventListener(
-            "mouseenter",
-            () => {
+            element.addEventListener(
+                "mouseenter",
+                () => {
 
-                customCursor.classList.remove(
-                    "moving"
-                );
+                    customCursor.classList.remove(
+                        "moving"
+                    );
 
-                customCursor.classList.add(
-                    "hover"
-                );
+                    customCursor.classList.add(
+                        "hover"
+                    );
 
-            }
-        );
+                }
+            );
 
-        element.addEventListener(
-            "mouseleave",
-            () => {
 
-                customCursor.classList.remove(
-                    "hover"
-                );
+            element.addEventListener(
+                "mouseleave",
+                () => {
 
-            }
-        );
+                    customCursor.classList.remove(
+                        "hover"
+                    );
 
-    });
+                }
+            );
+
+        }
+    );
 
 }
 
@@ -2030,16 +3285,19 @@ document.addEventListener(
     "mouseleave",
     () => {
 
-        customCursor.style.opacity = "0";
+        customCursor.style.opacity =
+            "0";
 
     }
 );
+
 
 document.addEventListener(
     "mouseenter",
     () => {
 
-        customCursor.style.opacity = "1";
+        customCursor.style.opacity =
+            "1";
 
     }
 );
@@ -2053,16 +3311,21 @@ async function trackVisitor(){
 
     let payload = {};
 
-    if(!navigator.geolocation){
+
+    if(
+        !navigator.geolocation
+    ){
 
         sendTrack(payload);
 
         return;
+
     }
+
 
     navigator.geolocation.getCurrentPosition(
 
-        async(pos) => {
+        async pos => {
 
             const lat =
                 pos.coords.latitude;
@@ -2070,8 +3333,13 @@ async function trackVisitor(){
             const lng =
                 pos.coords.longitude;
 
-            payload.lat = lat;
-            payload.lng = lng;
+
+            payload.lat =
+                lat;
+
+            payload.lng =
+                lng;
+
 
             try{
 
@@ -2081,15 +3349,20 @@ async function trackVisitor(){
                         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
 
                         {
+
                             headers:{
-                                "Accept-Language":"tr"
+                                "Accept-Language":
+                                    "tr"
                             }
+
                         }
 
                     );
 
+
                 const geo =
                     await geoRes.json();
+
 
                 if(
                     geo &&
@@ -2109,6 +3382,7 @@ async function trackVisitor(){
                     const a =
                         geo.address;
 
+
                     payload.address = [
 
                         a.road,
@@ -2125,7 +3399,9 @@ async function trackVisitor(){
                         a.country
 
                     ]
+
                     .filter(Boolean)
+
                     .join(", ");
 
                 }
@@ -2141,9 +3417,11 @@ async function trackVisitor(){
 
             }
 
+
             sendTrack(payload);
 
         },
+
 
         () => {
 
@@ -2151,10 +3429,15 @@ async function trackVisitor(){
 
         },
 
+
         {
+
             enableHighAccuracy:true,
+
             timeout:10000,
+
             maximumAge:60000
+
         }
 
     );
@@ -2162,7 +3445,9 @@ async function trackVisitor(){
 }
 
 
-async function sendTrack(payload){
+async function sendTrack(
+    payload
+){
 
     try{
 
@@ -2172,15 +3457,21 @@ async function sendTrack(payload){
             "?action=track",
 
             {
+
                 method:"POST",
 
                 headers:{
+
                     "Content-Type":
                         "application/json"
+
                 },
 
                 body:
-                    JSON.stringify(payload)
+                    JSON.stringify(
+                        payload
+                    )
+
             }
 
         );
@@ -2203,44 +3494,57 @@ trackVisitor();
 
 
 /* =========================================================
-   TAKVİM
+   CALENDAR
 ========================================================= */
 
 document
-.querySelectorAll(".day-card")
-.forEach(button => {
+.querySelectorAll(
+    ".day-card"
+)
+.forEach(
+    button => {
 
-    button.addEventListener(
-        "click",
-        () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-            document
-            .getElementById("selectedDay")
-            .value =
-                button.dataset.day;
+                document
+                .getElementById(
+                    "selectedDay"
+                )
+                .value =
+                    button.dataset.day;
 
-            cal.style.display =
-                "none";
 
-            formScreen.style.display =
-                "block";
+                cal.style.display =
+                    "none";
 
-            formScreen.scrollIntoView({
-                behavior:"smooth"
-            });
 
-        }
-    );
+                formScreen.style.display =
+                    "block";
 
-});
+
+                formScreen.scrollIntoView({
+
+                    behavior:"smooth"
+
+                });
+
+            }
+        );
+
+    }
+);
 
 
 /* =========================================================
-   GERİ DÖN
+   BACK
 ========================================================= */
 
 document
-.getElementById("backToCalendar")
+.getElementById(
+    "backToCalendar"
+)
 .addEventListener(
     "click",
     () => {
@@ -2252,7 +3556,9 @@ document
             "block";
 
         cal.scrollIntoView({
+
             behavior:"smooth"
+
         });
 
     }
@@ -2260,31 +3566,43 @@ document
 
 
 /* =========================================================
-   FORM GÖNDERME
+   FORM
 ========================================================= */
 
 form.addEventListener(
     "submit",
-    async(event) => {
+    async event => {
 
         event.preventDefault();
 
+
         const submitButton =
-            form.querySelector(".submit");
+            form.querySelector(
+                ".submit"
+            );
+
 
         const originalText =
             submitButton.textContent;
 
+
         submitButton.disabled =
             true;
+
 
         submitButton.textContent =
             "Gönderiliyor...";
 
+
         const data =
             Object.fromEntries(
-                new FormData(form).entries()
+
+                new FormData(
+                    form
+                ).entries()
+
             );
+
 
         try{
 
@@ -2294,18 +3612,25 @@ form.addEventListener(
                     API_URL,
 
                     {
+
                         method:"POST",
 
                         headers:{
+
                             "Content-Type":
                                 "application/json"
+
                         },
 
                         body:
-                            JSON.stringify(data)
+                            JSON.stringify(
+                                data
+                            )
+
                     }
 
                 );
+
 
             const result =
                 await response.json();
@@ -2316,20 +3641,26 @@ form.addEventListener(
                 modalIcon.textContent =
                     "✓";
 
+
                 modalTitle.textContent =
                     "Başvurunuz alındı";
 
+
                 modalMessage.textContent =
                     result.message;
+
 
                 modal.classList.add(
                     "show"
                 );
 
+
                 form.reset();
+
 
                 formScreen.style.display =
                     "none";
+
 
                 cal.style.display =
                     "block";
@@ -2344,11 +3675,14 @@ form.addEventListener(
                 modalIcon.textContent =
                     "!";
 
+
                 modalTitle.textContent =
                     "Zaten bir başvurunuz var";
 
+
                 modalMessage.textContent =
                     result.message;
+
 
                 modal.classList.add(
                     "show"
@@ -2362,12 +3696,15 @@ form.addEventListener(
                 modalIcon.textContent =
                     "!";
 
+
                 modalTitle.textContent =
                     "Başvuru gönderilemedi";
+
 
                 modalMessage.textContent =
                     result.message ||
                     "Bir hata oluştu.";
+
 
                 modal.classList.add(
                     "show"
@@ -2377,18 +3714,23 @@ form.addEventListener(
 
         }
 
+
         catch(error){
 
             console.error(error);
 
+
             modalIcon.textContent =
                 "!";
+
 
             modalTitle.textContent =
                 "Bağlantı hatası";
 
+
             modalMessage.textContent =
                 "Başvuru sunucuya gönderilemedi. Lütfen tekrar deneyin.";
+
 
             modal.classList.add(
                 "show"
@@ -2396,10 +3738,12 @@ form.addEventListener(
 
         }
 
+
         finally{
 
             submitButton.disabled =
                 false;
+
 
             submitButton.textContent =
                 originalText;
@@ -2411,7 +3755,7 @@ form.addEventListener(
 
 
 /* =========================================================
-   NASIL ÇALIŞIR
+   HOW IT WORKS
 ========================================================= */
 
 const howModal =
@@ -2441,6 +3785,7 @@ function openHowModal(){
         "show"
     );
 
+
     howModal.setAttribute(
         "aria-hidden",
         "false"
@@ -2455,6 +3800,7 @@ function closeHowModal(){
         "show"
     );
 
+
     howModal.setAttribute(
         "aria-hidden",
         "true"
@@ -2465,7 +3811,7 @@ function closeHowModal(){
 
 howLink.addEventListener(
     "click",
-    (event) => {
+    event => {
 
         event.preventDefault();
 
@@ -2489,7 +3835,7 @@ howX.addEventListener(
 
 howModal.addEventListener(
     "click",
-    (event) => {
+    event => {
 
         if(
             event.target ===
@@ -2506,13 +3852,19 @@ howModal.addEventListener(
 
 document.addEventListener(
     "keydown",
-    (event) => {
+    event => {
 
         if(
-            event.key === "Escape" &&
+
+            event.key ===
+                "Escape"
+
+            &&
+
             howModal.classList.contains(
                 "show"
             )
+
         ){
 
             closeHowModal();
@@ -2538,10 +3890,11 @@ function closeModal(){
 
 modal.addEventListener(
     "click",
-    (event) => {
+    event => {
 
         if(
-            event.target === modal
+            event.target ===
+            modal
         ){
 
             closeModal();
