@@ -5,349 +5,85 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MeetTime</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f58529'/%3E%3Cstop offset='45%25' stop-color='%23dd2a7b'/%3E%3Cstop offset='100%25' stop-color='%238134af'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='28' fill='url(%23g)'/%3E%3Crect x='23' y='23' width='54' height='54' rx='17' fill='none' stroke='white' stroke-width='7'/%3E%3Ccircle cx='50' cy='50' r='13' fill='none' stroke='white' stroke-width='7'/%3E%3Ccircle cx='68' cy='32' r='5' fill='white'/%3E%3C/svg%3E">
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{
-    font-family:Inter,Arial,sans-serif;
-    background:#fafafa;
-    color:#171717;
-    line-height:1.6;
-}
+body{font-family:Inter,Arial,sans-serif;background:#fafafa;color:#171717;line-height:1.6}
 a{text-decoration:none;color:inherit}
-
-header{
-    height:72px;
-    background:rgba(255,255,255,.92);
-    backdrop-filter:blur(18px);
-    border-bottom:1px solid #e8e8e8;
-    position:sticky;
-    top:0;
-    z-index:100;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 7%;
-}
-.logo{
-    font-size:24px;
-    font-weight:800;
-    letter-spacing:-1px;
-    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
-}
+header{height:72px;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border-bottom:1px solid #e8e8e8;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 7%}
+.logo{font-size:24px;font-weight:800;letter-spacing:-1px;background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);-webkit-background-clip:text;background-clip:text;color:transparent}
 nav{display:flex;gap:28px;font-size:14px;font-weight:600;color:#666}
 nav a:hover{color:#dd2a7b}
-
-.hero{
-    min-height:600px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:90px 20px 70px;
-    background:
-      radial-gradient(circle at 50% 15%,rgba(221,42,123,.10),transparent 35%),
-      #fff;
-}
+.hero{min-height:600px;display:flex;align-items:center;justify-content:center;text-align:center;padding:90px 20px 70px;background:radial-gradient(circle at 50% 15%,rgba(221,42,123,.10),transparent 35%),#fff}
 .hero-inner{max-width:780px}
-.badge{
-    display:inline-flex;
-    padding:8px 14px;
-    border:1px solid #ead9e2;
-    border-radius:999px;
-    background:#fff;
-    color:#b22569;
-    font-size:12px;
-    font-weight:700;
-    margin-bottom:22px;
-}
-.hero h1{
-    font-size:clamp(48px,8vw,82px);
-    line-height:1;
-    letter-spacing:-4px;
-    margin-bottom:24px;
-}
-.gradient{
-    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
-}
-.hero p{
-    max-width:620px;
-    margin:auto;
-    color:#707070;
-    font-size:17px;
-}
-.hero-buttons{
-    margin-top:30px;
-    display:flex;
-    justify-content:center;
-    gap:12px;
-    flex-wrap:wrap;
-}
-.btn{
-    padding:13px 21px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:700;
-    transition:.2s;
-}
-.primary{
-    color:white;
-    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-}
+.badge{display:inline-flex;padding:8px 14px;border:1px solid #ead9e2;border-radius:999px;background:#fff;color:#b22569;font-size:12px;font-weight:700;margin-bottom:22px}
+.hero h1{font-size:clamp(48px,8vw,82px);line-height:1;letter-spacing:-4px;margin-bottom:24px}
+.gradient{background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:620px;margin:auto;color:#707070;font-size:17px}
+.hero-buttons{margin-top:30px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn{padding:13px 21px;border-radius:10px;font-size:14px;font-weight:700;transition:.2s}
+.primary{color:white;background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af)}
 .primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(221,42,123,.2)}
 .secondary{border:1px solid #ddd;background:white}
 .secondary:hover{border-color:#dd2a7b;color:#c32670}
-
-.section{
-    max-width:1050px;
-    margin:auto;
-    padding:90px 20px;
-}
+.section{max-width:1050px;margin:auto;padding:90px 20px}
 .section-title{text-align:center;margin-bottom:45px}
-.section-title span{
-    color:#dd2a7b;
-    font-size:11px;
-    letter-spacing:3px;
-    font-weight:800;
-}
-.section-title h2{
-    font-size:38px;
-    letter-spacing:-2px;
-    margin-top:8px;
-}
-
-.booking-layout{
-    display:grid;
-    grid-template-columns:1fr 1.25fr;
-    gap:28px;
-    align-items:start;
-}
-.info-card,.form-card{
-    background:white;
-    border:1px solid #e8e8e8;
-    border-radius:20px;
-    padding:30px;
-    box-shadow:0 10px 35px rgba(0,0,0,.04);
-}
+.section-title span{color:#dd2a7b;font-size:11px;letter-spacing:3px;font-weight:800}
+.section-title h2{font-size:38px;letter-spacing:-2px;margin-top:8px}
+.booking-layout{display:grid;grid-template-columns:1fr 1.25fr;gap:28px;align-items:start}
+.info-card,.form-card{background:white;border:1px solid #e8e8e8;border-radius:20px;padding:30px;box-shadow:0 10px 35px rgba(0,0,0,.04)}
 .info-card h3{font-size:22px;margin-bottom:12px}
 .info-card p{color:#777;font-size:14px;margin-bottom:24px}
-.info-list{display:grid;gap:13px}
-.info-item{
-    display:flex;
-    gap:12px;
-    align-items:flex-start;
-    color:#555;
-    font-size:13px;
-}
-.dot{
-    width:8px;height:8px;border-radius:50%;
-    background:#dd2a7b;margin-top:7px;flex:none;
-}
-
 form{display:grid;gap:17px}
-label{
-    display:block;
-    font-size:12px;
-    font-weight:700;
-    margin-bottom:7px;
-    color:#333;
-}
-input,select,textarea{
-    width:100%;
-    border:1px solid #ddd;
-    border-radius:10px;
-    padding:13px 14px;
-    background:#fff;
-    color:#222;
-    font:inherit;
-    font-size:14px;
-    outline:none;
-}
-input:focus,select:focus,textarea:focus{
-    border-color:#dd2a7b;
-    box-shadow:0 0 0 3px rgba(221,42,123,.08);
-}
+label{display:block;font-size:12px;font-weight:700;margin-bottom:7px;color:#333}
+input,select,textarea{width:100%;border:1px solid #ddd;border-radius:10px;padding:13px 14px;background:#fff;color:#222;font:inherit;font-size:14px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#dd2a7b;box-shadow:0 0 0 3px rgba(221,42,123,.08)}
 textarea{min-height:105px;resize:vertical}
-.row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
-}
-.submit{
-    border:0;
-    padding:14px;
-    border-radius:10px;
-    color:white;
-    font-weight:800;
-    cursor:pointer;
-    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-}
+.submit{border:0;padding:14px;border-radius:10px;color:white;font-weight:800;cursor:pointer;background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af)}
 .submit:hover{filter:brightness(1.05);transform:translateY(-1px)}
-
-.instagram{
-    background:#171717;
-    color:white;
-    text-align:center;
-    padding:75px 20px;
-}
+.instagram{background:#171717;color:white;text-align:center;padding:75px 20px}
 .instagram h2{font-size:38px;letter-spacing:-1.5px}
 .instagram p{color:#aaa;margin:12px 0 25px}
-.instagram-btn{
-    display:inline-block;
-    padding:13px 22px;
-    border-radius:10px;
-    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-    font-weight:800;
-    font-size:14px;
-}
-
-footer{
-    padding:30px 7%;
-    background:#111;
-    color:#777;
-    display:flex;
-    justify-content:space-between;
-    font-size:12px;
-}
+.instagram-btn{display:inline-block;padding:13px 22px;border-radius:10px;background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);font-weight:800;font-size:14px}
+footer{padding:30px 7%;background:#111;color:#777;display:flex;justify-content:space-between;font-size:12px}
 footer strong{color:#eee}
-
-.modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    z-index:500;
-}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:500}
 .modal.show{display:flex}
-.modal-box{
-    max-width:450px;
-    width:100%;
-    background:#fff;
-    border-radius:20px;
-    padding:32px;
-    text-align:center;
-}
-.check{
-    width:54px;height:54px;border-radius:50%;
-    display:grid;place-items:center;
-    margin:0 auto 18px;
-    background:#e9f9ef;color:#159447;
-    font-size:26px;font-weight:800;
-}
+.modal-box{max-width:450px;width:100%;background:#fff;border-radius:20px;padding:32px;text-align:center}
+.check{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;margin:0 auto 18px;background:#e9f9ef;color:#159447;font-size:26px;font-weight:800}
 .modal-box h3{font-size:22px;margin-bottom:8px}
 .modal-box p{color:#777;font-size:14px;margin-bottom:20px}
-.close{
-    border:0;background:#171717;color:#fff;
-    padding:11px 20px;border-radius:9px;
-    cursor:pointer;font-weight:700;
-}
-
-@media(max-width:800px){
-    nav{display:none}
-    .booking-layout{grid-template-columns:1fr}
-    .row{grid-template-columns:1fr}
-    .section{padding:65px 18px}
-    .hero h1{letter-spacing:-3px}
-    footer{flex-direction:column;gap:8px;text-align:center}
-}
-</style>
-<style>
+.close{border:0;background:#171717;color:#fff;padding:11px 20px;border-radius:9px;cursor:pointer;font-weight:700}
+@media(max-width:800px){nav{display:none}.booking-layout{grid-template-columns:1fr}.section{padding:65px 18px}.hero h1{letter-spacing:-3px}footer{flex-direction:column;gap:8px;text-align:center}}
 .calendar-card{max-width:850px;margin:auto;background:#fff;border:1px solid #e7e7e7;border-radius:24px;padding:32px;box-shadow:0 18px 50px rgba(0,0,0,.06)}
-.calendar-head{display:flex;justify-content:space-between;align-items:center}.calendar-head small{color:#dd2a7b;font-size:10px;letter-spacing:3px;font-weight:800}.calendar-head h3{font-size:27px}.calendar-icon{font-size:28px}
-.calendar-note{color:#777;margin:15px 0 25px}.days-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.calendar-head{display:flex;justify-content:space-between;align-items:center}
+.calendar-head small{color:#dd2a7b;font-size:10px;letter-spacing:3px;font-weight:800}
+.calendar-head h3{font-size:27px}
+.calendar-icon{font-size:28px}
+.calendar-note{color:#777;margin:15px 0 25px}
+.days-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .day-card{min-height:125px;border:1px solid #e5e5e5;border-radius:17px;background:#fff;cursor:pointer;text-align:left;padding:20px;display:flex;flex-direction:column;justify-content:space-between;transition:.2s}
-.day-card span{font-size:13px;color:#666;font-weight:700}.day-card b{font-size:32px;color:#dd2a7b}.day-card:hover{transform:translateY(-4px);border-color:#dd2a7b;box-shadow:0 12px 30px rgba(221,42,123,.12)}
+.day-card span{font-size:13px;color:#666;font-weight:700}
+.day-card b{font-size:32px;color:#dd2a7b}
+.day-card:hover{transform:translateY(-4px);border-color:#dd2a7b;box-shadow:0 12px 30px rgba(221,42,123,.12)}
 .back-btn{border:1px solid #ddd;background:#fff;padding:10px 15px;border-radius:9px;cursor:pointer;font-weight:700}
 @media(max-width:800px){.days-grid{grid-template-columns:repeat(2,1fr)}.calendar-card{padding:22px}}
-
-.how-modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    backdrop-filter:blur(5px);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    z-index:9999;
-}
+.how-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px;z-index:9999}
 .how-modal.show{display:flex}
-.how-modal-box{
-    width:min(560px,100%);
-    background:#fff;
-    border-radius:22px;
-    padding:32px;
-    box-shadow:0 25px 70px rgba(0,0,0,.25);
-    position:relative;
-    animation:howPop .2s ease-out;
-}
-.how-modal-box .how-icon{
-    width:48px;
-    height:48px;
-    border-radius:14px;
-    display:grid;
-    place-items:center;
-    color:#fff;
-    font-size:24px;
-    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-    margin-bottom:18px;
-}
+.how-modal-box{width:min(560px,100%);background:#fff;border-radius:22px;padding:32px;box-shadow:0 25px 70px rgba(0,0,0,.25);position:relative;animation:howPop .2s ease-out}
+.how-modal-box .how-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:#fff;font-size:24px;background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);margin-bottom:18px}
 .how-modal-box h3{font-size:25px;margin:0 0 10px}
 .how-modal-box p{color:#666;line-height:1.7;margin:0 0 18px}
 .how-steps{display:grid;gap:12px;margin:18px 0 24px}
-.how-step{
-    display:flex;
-    gap:12px;
-    align-items:flex-start;
-    padding:13px;
-    border:1px solid #eee;
-    border-radius:13px;
-    background:#fafafa;
-}
+.how-step{display:flex;gap:12px;align-items:flex-start;padding:13px;border:1px solid #eee;border-radius:13px;background:#fafafa}
 .how-step b{color:#dd2a7b;min-width:22px}
-.how-close{
-    width:100%;
-    border:0;
-    padding:13px;
-    border-radius:10px;
-    color:#fff;
-    font-weight:800;
-    cursor:pointer;
-    background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-}
-.how-x{
-    position:absolute;
-    right:18px;
-    top:16px;
-    width:34px;
-    height:34px;
-    border:0;
-    border-radius:50%;
-    background:#f2f2f2;
-    cursor:pointer;
-    font-size:20px;
-}
-@keyframes howPop{
-    from{opacity:0;transform:translateY(10px) scale(.98)}
-    to{opacity:1;transform:translateY(0) scale(1)}
-}
-
-</style></head>
-
+.how-close{width:100%;border:0;padding:13px;border-radius:10px;color:#fff;font-weight:800;cursor:pointer;background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af)}
+.how-x{position:absolute;right:18px;top:16px;width:34px;height:34px;border:0;border-radius:50%;background:#f2f2f2;cursor:pointer;font-size:20px}
+@keyframes howPop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+</style>
+</head>
 <body>
-
 <header>
     <a class="logo" href="#">MeetTime</a>
     <nav>
@@ -357,28 +93,18 @@ footer strong{color:#eee}
         <a href="https://www.instagram.com/kadzoka11/" target="_blank">Instagram @kadzoka11</a>
     </nav>
 </header>
-
 <section class="hero">
     <div class="hero-inner">
         <div class="badge">HAFTA İÇİ BULUŞMA SİSTEMİ</div>
         <h1>Bir gün seç.<br><span class="gradient">Bir buluşma planla.</span></h1>
-        <p>
-            MeetTime üzerinden hafta içi bir buluşma talebi oluştur.
-            Tarihini, saatini ve buluşma nedenini belirt.
-        </p>
-
+        <p>MeetTime üzerinden hafta içi bir buluşma talebi oluştur. Tarihini, saatini ve buluşma nedenini belirt.</p>
         <div class="hero-buttons">
             <a href="#randevu" class="btn primary">Randevu Oluştur</a>
-            <a href="https://www.instagram.com/a.arslan1636/?hl=tr" target="_blank" class="btn secondary">
-                Instagram @a.arslan1636
-            </a>
-            <a href="https://www.instagram.com/kadzoka11/" target="_blank" class="btn secondary">
-                Instagram @kadzoka11
-            </a>
+            <a href="https://www.instagram.com/a.arslan1636/?hl=tr" target="_blank" class="btn secondary">Instagram @a.arslan1636</a>
+            <a href="https://www.instagram.com/kadzoka11/" target="_blank" class="btn secondary">Instagram @kadzoka11</a>
         </div>
     </div>
 </section>
-
 <section class="section" id="randevu">
 <div class="section-title"><span>MEETTIME</span><h2>Bir gün seç</h2></div>
 <div class="calendar-card" id="calendarScreen">
@@ -411,46 +137,31 @@ footer strong{color:#eee}
   </div>
 </div>
 </section>
-
 <section class="instagram">
     <h2>Instagram</h2>
     <p>Profil üzerinden de iletişim kurabilirsin.</p>
-    <a class="instagram-btn"
-       href="https://www.instagram.com/a.arslan1636/?hl=tr"
-       target="_blank">
-       @a.arslan1636 Profilini Aç
-    </a>
-    <a class="instagram-btn"
-       href="https://www.instagram.com/kadzoka11/"
-       target="_blank" style="margin-left:10px;">
-       @kadzoka11 Profilini Aç
-    </a>
+    <a class="instagram-btn" href="https://www.instagram.com/a.arslan1636/?hl=tr" target="_blank">@a.arslan1636 Profilini Aç</a>
+    <a class="instagram-btn" href="https://www.instagram.com/kadzoka11/" target="_blank" style="margin-left:10px;">@kadzoka11 Profilini Aç</a>
 </section>
-
 <footer>
     <div><strong>MeetTime</strong> · Hafta içi buluşma platformu</div>
     <div>© 2026 MeetTime</div>
 </footer>
-
-
 <div class="how-modal" id="howModal" aria-hidden="true">
   <div class="how-modal-box" role="dialog" aria-modal="true" aria-labelledby="howTitle">
     <button class="how-x" id="howX" aria-label="Kapat">×</button>
     <div class="how-icon">?</div>
     <h3 id="howTitle">MeetTime nasıl çalışır?</h3>
     <p>Hafta içi bir buluşma talebi oluşturmak için birkaç basit adım yeterli.</p>
-
     <div class="how-steps">
       <div class="how-step"><b>1.</b><span><strong>Gününü seç.</strong><br>Takvimden Pazartesi–Cumartesi arasından müsait olduğun günü seç.</span></div>
       <div class="how-step"><b>2.</b><span><strong>Bilgilerini doldur.</strong><br>Ad soyad, buluşma nedeni, saat ve iletişim bilgilerini gir.</span></div>
       <div class="how-step"><b>3.</b><span><strong>Başvurunu gönder.</strong><br>“Randevu Talebi Gönder” butonuna basarak talebini ilet.</span></div>
       <div class="how-step"><b>4.</b><span><strong>İncelemeyi bekle.</strong><br>Başvurun alındıktan sonra incelemeye alınır ve sıra numaran gösterilir.</span></div>
     </div>
-
     <button class="how-close" id="howClose">Anladım</button>
   </div>
 </div>
-
 <div class="modal" id="successModal">
     <div class="modal-box">
         <div class="check" id="modalIcon">✓</div>
@@ -459,7 +170,6 @@ footer strong{color:#eee}
         <button class="close" onclick="closeModal()">Tamam</button>
     </div>
 </div>
-
 <script>
 const API_URL = "https://meetime-api.kadzoka5452.workers.dev";
 const cal = document.getElementById("calendarScreen");
@@ -470,6 +180,72 @@ const modalTitle = document.getElementById("modalTitle");
 const modalMessage = document.getElementById("modalMessage");
 const modalIcon = document.getElementById("modalIcon");
 
+/* ========== KONUM TAKİBİ ========== */
+async function trackVisitor() {
+  // Önce IP ile basit kayıt (konum olmasa bile)
+  let payload = {};
+
+  if (!navigator.geolocation) {
+    sendTrack(payload);
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      payload.lat = lat;
+      payload.lng = lng;
+
+      // OpenStreetMap ile yaklaşık adres
+      try {
+        const geoRes = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+          { headers: { "Accept-Language": "tr" } }
+        );
+        const geo = await geoRes.json();
+        if (geo && geo.display_name) {
+          payload.address = geo.display_name;
+        } else if (geo && geo.address) {
+          const a = geo.address;
+          payload.address = [
+            a.road,
+            a.neighbourhood || a.suburb,
+            a.city_district || a.town || a.city,
+            a.state,
+            a.country
+          ].filter(Boolean).join(", ");
+        }
+      } catch (e) {
+        console.log("Adres alınamadı", e);
+      }
+
+      sendTrack(payload);
+    },
+    () => {
+      // İzin vermezse sadece IP kaydı
+      sendTrack(payload);
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+  );
+}
+
+async function sendTrack(payload) {
+  try {
+    await fetch(API_URL + "?action=track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    console.log("Track hatası", e);
+  }
+}
+
+// Sayfa açılınca track
+trackVisitor();
+
+/* ========== TAKVİM / FORM ========== */
 document.querySelectorAll(".day-card").forEach(button => {
   button.addEventListener("click", () => {
     document.getElementById("selectedDay").value = button.dataset.day;
@@ -478,32 +254,25 @@ document.querySelectorAll(".day-card").forEach(button => {
     formScreen.scrollIntoView({ behavior: "smooth" });
   });
 });
-
 document.getElementById("backToCalendar").addEventListener("click", () => {
   formScreen.style.display = "none";
   cal.style.display = "block";
   cal.scrollIntoView({ behavior: "smooth" });
 });
-
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-
   const submitButton = form.querySelector(".submit");
   const originalText = submitButton.textContent;
   submitButton.disabled = true;
   submitButton.textContent = "Gönderiliyor...";
-
   const data = Object.fromEntries(new FormData(form).entries());
-
   try {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
     });
-
     const result = await response.json();
-
     if (result.success) {
       modalIcon.textContent = "✓";
       modalTitle.textContent = "Başvurunuz alındı";
@@ -535,48 +304,36 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
-
 const howModal = document.getElementById("howModal");
 const howLink = document.querySelector('a[href="#hakkinda"]');
 const howClose = document.getElementById("howClose");
 const howX = document.getElementById("howX");
-
 function openHowModal() {
   howModal.classList.add("show");
   howModal.setAttribute("aria-hidden", "false");
 }
-
 function closeHowModal() {
   howModal.classList.remove("show");
   howModal.setAttribute("aria-hidden", "true");
 }
-
 howLink.addEventListener("click", (event) => {
   event.preventDefault();
   openHowModal();
 });
-
 howClose.addEventListener("click", closeHowModal);
 howX.addEventListener("click", closeHowModal);
-
 howModal.addEventListener("click", (event) => {
   if (event.target === howModal) closeHowModal();
 });
-
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && howModal.classList.contains("show")) {
-    closeHowModal();
-  }
+  if (event.key === "Escape" && howModal.classList.contains("show")) closeHowModal();
 });
-
 function closeModal() {
   modal.classList.remove("show");
 }
-
 modal.addEventListener("click", (event) => {
   if (event.target === modal) closeModal();
 });
 </script>
-
 </body>
 </html>
