@@ -2,2568 +2,1184 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>MeetTime Yönetim</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MeetTime</title>
+
+<link rel="icon" type="image/svg+xml"
+href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%2316a34a'/%3E%3Cpath d='M30 35h40v30H30z' fill='none' stroke='white' stroke-width='7'/%3E%3Ccircle cx='50' cy='50' r='9' fill='white'/%3E%3C/svg%3E">
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
 body{
-  font-family:Inter,Arial,sans-serif;
-  background:#f6f6f8;
-  color:#171717;
-  min-height:100vh
+    font-family:Inter,Arial,sans-serif;
+    background:#f4faf6;
+    color:#172019;
+    min-height:100vh;
 }
 
-button,input,select{font:inherit}
+/* =========================
+   LOADING
+========================= */
 
-.login{
-  min-height:100vh;
-  display:grid;
-  place-items:center;
-  padding:20px
+#loadingScreen{
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 50% 35%,#dcfce7 0,#f4faf6 45%,#fff 100%);
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+    transition:.6s ease;
 }
 
-.login-box{
-  width:min(390px,100%);
-  padding:34px;
-  background:#fff;
-  border:1px solid #e6e6e6;
-  border-radius:22px;
-  box-shadow:0 20px 60px #0000000d
+.loader{
+    width:min(420px,100%);
+    text-align:center;
+}
+
+.loader-logo{
+    width:76px;
+    height:76px;
+    border-radius:24px;
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+    margin:0 auto 25px;
+    display:grid;
+    place-items:center;
+    color:white;
+    font-size:34px;
+    font-weight:900;
+    box-shadow:0 15px 35px #16a34a35;
+}
+
+.loader h1{
+    font-size:28px;
+    margin-bottom:8px;
+}
+
+.loader p{
+    color:#6b7280;
+    font-size:14px;
+    min-height:22px;
+}
+
+.loader-ring{
+    width:58px;
+    height:58px;
+    border:5px solid #dcfce7;
+    border-top-color:#16a34a;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:25px auto;
+}
+
+.progress{
+    width:100%;
+    height:7px;
+    background:#dcfce7;
+    border-radius:99px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    background:linear-gradient(90deg,#16a34a,#22c55e);
+    border-radius:99px;
+    transition:width .25s linear;
+}
+
+.percent{
+    margin-top:9px;
+    color:#16a34a;
+    font-size:12px;
+    font-weight:800;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+    height:70px;
+    background:white;
+    border-bottom:1px solid #e5eee7;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 6%;
+    position:sticky;
+    top:0;
+    z-index:50;
 }
 
 .logo{
-  font-size:28px;
-  font-weight:900;
-  background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-  -webkit-background-clip:text;
-  color:transparent
+    font-size:24px;
+    font-weight:900;
+    color:#15803d;
 }
 
-.muted{
-  color:#777;
-  font-size:14px;
-  margin:8px 0 24px
+.logo span{
+    color:#22c55e;
 }
-
-label{
-  display:block;
-  font-size:12px;
-  font-weight:800;
-  margin:0 0 7px
-}
-
-input{
-  width:100%;
-  padding:13px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  outline:0
-}
-
-input:focus,select:focus{
-  border-color:#dd2a7b;
-  box-shadow:0 0 0 3px #dd2a7b12
-}
-
-.btn{
-  border:0;
-  border-radius:10px;
-  padding:13px 16px;
-  cursor:pointer;
-  font-weight:800
-}
-
-.primary{
-  width:100%;
-  color:#fff;
-  background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af);
-  margin-top:14px
-}
-
-.error{
-  color:#c51f61;
-  font-size:13px;
-  margin-top:10px;
-  display:none
-}
-
-.dashboard{display:none}
-
-header{
-  background:#fff;
-  border-bottom:1px solid #e7e7e7;
-  padding:18px 5%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:5
-}
-
-header h1{font-size:23px}
 
 .header-actions{
-  display:flex;
-  align-items:center;
-  gap:8px
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
-
-.logout{
-  background:#171717;
-  color:#fff
-}
-
-/* KONUM */
 
 .location-btn{
-  border:1px solid #e1e1e1;
-  background:#fff;
-  color:#333;
-  border-radius:10px;
-  padding:10px 13px;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:800;
-  display:flex;
-  align-items:center;
-  gap:7px;
-  transition:.2s
+    border:1px solid #bbf7d0;
+    background:#f0fdf4;
+    color:#15803d;
+    width:43px;
+    height:43px;
+    border-radius:12px;
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    transition:.2s;
 }
 
 .location-btn:hover{
-  background:#f7f7f7;
-  transform:translateY(-1px)
+    background:#dcfce7;
+    transform:translateY(-1px);
 }
 
-.location-btn.loading{
-  background:#fff8e8;
-  border-color:#f0d28a;
-  color:#795500
+.location-btn svg{
+    width:22px;
+    height:22px;
 }
 
-.location-btn.searching{
-  background:#f7f0ff;
-  border-color:#d9c2ef;
-  color:#7139a3
-}
-
-.location-btn.connected{
-  background:#effaf3;
-  border-color:#bde5c9;
-  color:#16803c
-}
-
-.location-btn.denied{
-  background:#fff0ef;
-  border-color:#f1c0bb;
-  color:#b42318
-}
-
-/* MAIN */
+/* =========================
+   MAIN
+========================= */
 
 main{
-  max-width:1250px;
-  margin:auto;
-  padding:35px 20px
+    max-width:900px;
+    margin:auto;
+    padding:50px 20px;
 }
 
-.top{
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  align-items:end;
-  margin-bottom:22px
+.hero{
+    text-align:center;
+    padding:50px 20px 35px;
 }
 
-.top h2{font-size:30px}
-
-.actions{
-  display:flex;
-  gap:10px
-}
-
-.refresh{
-  background:#fff;
-  border:1px solid #ddd
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
-  margin-bottom:20px
-}
-
-.stat{
-  background:#fff;
-  border:1px solid #e7e7e7;
-  border-radius:16px;
-  padding:20px
-}
-
-.stat span{
-  color:#777;
-  font-size:12px
-}
-
-.stat b{
-  display:block;
-  font-size:28px;
-  margin-top:5px
-}
-
-.table-wrap{
-  overflow:auto;
-  background:#fff;
-  border:1px solid #e7e7e7;
-  border-radius:18px
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  min-width:1000px
-}
-
-th,td{
-  text-align:left;
-  padding:15px;
-  border-bottom:1px solid #eee;
-  font-size:13px;
-  vertical-align:top
-}
-
-th{
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.7px;
-  color:#777;
-  background:#fafafa
-}
-
-.reason{
-  max-width:260px;
-  color:#555
-}
-
-.empty{
-  text-align:center;
-  padding:50px;
-  color:#777
-}
-
-.status{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:999px;
-  background:#fff3f8;
-  color:#c32670;
-  font-size:11px;
-  font-weight:800
-}
-
-.approved{
-  background:#effaf3;
-  color:#16803c
-}
-
-.rejected{
-  background:#fff0ef;
-  color:#b42318
-}
-
-.row-actions{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap
-}
-
-.small-btn{
-  border:1px solid #ddd;
-  background:#fff;
-  border-radius:8px;
-  padding:7px 9px;
-  cursor:pointer;
-  font-size:11px;
-  font-weight:800
-}
-
-.small-btn:hover{background:#f7f7f7}
-
-.approve{
-  color:#16803c;
-  border-color:#bde5c9;
-  background:#f2fff6
-}
-
-.reject{
-  color:#b42318;
-  border-color:#f1c0bb;
-  background:#fff5f4
-}
-
-.delete{
-  color:#b42318;
-  border-color:#f1c0bb;
-  background:#fff
-}
-
-.notice{
-  margin:0 0 15px;
-  padding:12px 14px;
-  border-radius:10px;
-  background:#fff8e8;
-  color:#795500;
-  font-size:13px;
-  display:none
-}
-
-/* CHAT */
-
-.chat-panel{
-  margin-top:24px;
-  background:#fff;
-  border:1px solid #eee;
-  border-radius:18px;
-  padding:18px;
-  box-shadow:0 8px 25px rgba(0,0,0,.06)
-}
-
-.chat-panel h3{margin:0 0 4px}
-
-.chat-sub{
-  margin:0 0 14px;
-  color:#777;
-  font-size:13px
-}
-
-.chat-messages{
-  height:320px;
-  overflow-y:auto;
-  background:#fafafa;
-  border:1px solid #eee;
-  border-radius:14px;
-  padding:14px;
-  display:flex;
-  flex-direction:column;
-  gap:9px
-}
-
-.chat-msg{
-  max-width:78%;
-  padding:9px 12px;
-  border-radius:14px;
-  background:#f0f0f0;
-  align-self:flex-start;
-  word-break:break-word
-}
-
-.chat-name{
-  font-size:11px;
-  font-weight:800;
-  color:#7b3fb5;
-  margin-bottom:3px
-}
-
-.chat-time{
-  font-size:9px;
-  color:#999
-}
-
-.chat-message-footer{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-top:5px
-}
-
-.chat-delete{
-  border:0;
-  background:transparent;
-  color:#b42318;
-  font-size:10px;
-  cursor:pointer;
-  font-weight:800;
-  padding:3px 6px;
-  border-radius:5px
-}
-
-.chat-delete:hover{background:#fff0ef}
-
-.chat-file{margin-top:6px}
-
-.chat-file img{
-  max-width:180px;
-  max-height:140px;
-  border-radius:10px;
-  display:block;
-  margin-top:4px;
-  cursor:pointer;
-  object-fit:cover;
-  border:1px solid #ddd
-}
-
-.chat-file img:hover{opacity:.9}
-
-.chat-file .file-link{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  margin-top:4px;
-  padding:7px 10px;
-  background:#fff;
-  border:1px solid #ddd;
-  border-radius:8px;
-  font-size:12px;
-  font-weight:700;
-  color:#171717;
-  text-decoration:none;
-  cursor:pointer
-}
-
-.chat-file .file-link:hover{background:#f7f7f7}
-
-.chat-form{
-  display:flex;
-  gap:8px;
-  margin-top:10px;
-  flex-wrap:wrap;
-  align-items:center
-}
-
-.chat-form select{
-  width:130px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  padding:11px;
-  background:#fff
-}
-
-.chat-form input[type="text"]{
-  flex:1;
-  min-width:140px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  padding:11px;
-  background:#fff
-}
-
-.chat-form .file-btn{
-  position:relative;
-  border:1px solid #ddd;
-  background:#fff;
-  border-radius:10px;
-  padding:10px 12px;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:800;
-  color:#7b3fb5;
-  white-space:nowrap
-}
-
-.chat-form .file-btn input{
-  position:absolute;
-  inset:0;
-  opacity:0;
-  cursor:pointer
-}
-
-.chat-form .file-name{
-  font-size:11px;
-  color:#7b3fb5;
-  max-width:120px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap
-}
-
-.chat-form button[type="submit"]{
-  border:0;
-  border-radius:10px;
-  padding:0 16px;
-  min-height:42px;
-  background:#7b3fb5;
-  color:#fff;
-  font-weight:800;
-  cursor:pointer
-}
-
-.chat-form button:disabled{
-  opacity:.6;
-  cursor:not-allowed
-}
-
-.chat-empty{
-  text-align:center;
-  color:#999;
-  padding:80px 10px 0;
-  font-size:13px
-}
-
-/* MODAL */
-
-.modal-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.75);
-  z-index:100;
-  align-items:center;
-  justify-content:center;
-  padding:20px
-}
-
-.modal-overlay.open{display:flex}
-
-.modal-box{
-  background:#fff;
-  border-radius:18px;
-  max-width:min(520px,95vw);
-  max-height:90vh;
-  overflow:auto;
-  padding:16px;
-  position:relative;
-  box-shadow:0 20px 60px rgba(0,0,0,.3)
-}
-
-.modal-box img{
-  width:100%;
-  max-height:70vh;
-  object-fit:contain;
-  border-radius:12px;
-  display:block
-}
-
-.modal-close{
-  position:absolute;
-  top:10px;
-  right:12px;
-  border:0;
-  background:#171717;
-  color:#fff;
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  font-size:18px;
-  cursor:pointer;
-  line-height:1;
-  display:grid;
-  place-items:center
-}
-
-.modal-title{
-  font-size:13px;
-  font-weight:800;
-  margin-bottom:10px;
-  padding-right:40px;
-  word-break:break-all
-}
-
-.modal-actions{
-  margin-top:12px;
-  display:flex;
-  gap:8px
-}
-
-.modal-actions a{
-  flex:1;
-  text-align:center;
-  padding:10px;
-  background:#7b3fb5;
-  color:#fff;
-  border-radius:10px;
-  font-weight:800;
-  text-decoration:none;
-  font-size:13px
-}
-
-/* VISITORS */
-
-.incognito-wrap{
-  margin-top:40px;
-  padding:30px 0 50px;
-  display:flex;
-  justify-content:center
-}
-
-.incognito-btn{
-  background:none;
-  border:none;
-  cursor:pointer;
-  opacity:.7;
-  transition:.2s
-}
-
-.incognito-btn:hover{
-  opacity:1;
-  transform:scale(1.05)
-}
-
-.incognito-btn svg{
-  width:56px;
-  height:56px
-}
-
-.visitors-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  z-index:110;
-  align-items:center;
-  justify-content:center;
-  padding:20px
-}
-
-.visitors-overlay.open{display:flex}
-
-.visitors-box{
-  background:#fff;
-  border-radius:18px;
-  width:min(560px,95vw);
-  max-height:80vh;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  box-shadow:0 20px 60px rgba(0,0,0,.3)
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    background:#dcfce7;
+    color:#15803d;
+    padding:8px 13px;
+    border-radius:99px;
+    font-size:12px;
+    font-weight:800;
+    margin-bottom:18px;
 }
 
-.visitors-header{
-  padding:16px 18px;
-  border-bottom:1px solid #eee;
-  display:flex;
-  align-items:center;
-  justify-content:space-between
+.dot{
+    width:7px;
+    height:7px;
+    background:#22c55e;
+    border-radius:50%;
+    animation:pulse 1.5s infinite;
 }
 
-.visitors-header h3{
-  font-size:16px;
-  margin:0
+@keyframes pulse{
+    50%{opacity:.35}
 }
 
-.visitors-close{
-  border:0;
-  background:#171717;
-  color:#fff;
-  width:30px;
-  height:30px;
-  border-radius:50%;
-  cursor:pointer;
-  font-size:16px
+.hero h1{
+    font-size:clamp(34px,6vw,58px);
+    line-height:1.05;
+    letter-spacing:-2px;
+    margin-bottom:18px;
 }
 
-.visitors-list{
-  overflow-y:auto;
-  padding:12px;
-  flex:1
+.hero h1 span{
+    color:#16a34a;
 }
 
-.visitor-row{
-  padding:12px;
-  border:1px solid #eee;
-  border-radius:12px;
-  margin-bottom:8px;
-  background:#fafafa;
-  font-size:13px
+.hero p{
+    max-width:600px;
+    margin:auto;
+    color:#6b7280;
+    line-height:1.7;
 }
 
-.visitor-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px
-}
-
-.visitor-row b{
-  display:block;
-  margin-bottom:4px
-}
+/* =========================
+   CARD
+========================= */
 
-.visitor-meta{
-  color:#666;
-  font-size:12px;
-  line-height:1.55
+.card{
+    background:white;
+    border:1px solid #e5eee7;
+    border-radius:22px;
+    padding:25px;
+    box-shadow:0 15px 45px #1665340d;
 }
 
-.visitor-delete{
-  border:0;
-  background:#fff0ef;
-  color:#b42318;
-  border:1px solid #f1c0bb;
-  width:34px;
-  height:34px;
-  border-radius:9px;
-  cursor:pointer;
-  font-size:15px
+.card h2{
+    margin-bottom:5px;
 }
 
-.visitor-delete:hover{
-  background:#ffe5e2
+.card-sub{
+    color:#777;
+    font-size:13px;
+    margin-bottom:22px;
 }
 
-.visitors-empty{
-  text-align:center;
-  padding:40px;
-  color:#999
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
 }
-
-@media(max-width:700px){
-
-  .stats{
-    grid-template-columns:1fr
-  }
-
-  .top{
-    align-items:stretch;
-    flex-direction:column
-  }
-
-  .actions{
-    width:100%
-  }
-
-  .actions button{
-    flex:1
-  }
 
-  .chat-form{
+.field{
+    display:flex;
     flex-direction:column;
-    align-items:stretch
-  }
+    gap:7px;
+}
 
-  .chat-form select,
-  .chat-form input[type="text"],
-  .chat-form .file-btn,
-  .chat-form button{
-    width:100%
-  }
+.field.full{
+    grid-column:1/-1;
+}
 
-  .chat-msg{
-    max-width:90%
-  }
+label{
+    font-size:12px;
+    font-weight:800;
+}
 
-  #locationText{
-    display:none
-  }
+input,select,textarea{
+    width:100%;
+    border:1px solid #dfe7e1;
+    border-radius:11px;
+    padding:13px;
+    outline:none;
+    background:#fff;
+    color:#172019;
+}
 
-  .location-btn{
-    padding:10px
-  }
+textarea{
+    min-height:100px;
+    resize:vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#22c55e;
+    box-shadow:0 0 0 3px #22c55e18;
+}
+
+.submit{
+    width:100%;
+    margin-top:18px;
+    border:0;
+    border-radius:12px;
+    padding:15px;
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+    color:white;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 10px 25px #16a34a25;
+}
+
+.submit:hover{
+    filter:brightness(.97);
+}
+
+.submit:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+/* =========================
+   LOCATION MODAL
+========================= */
+
+.overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#052e16a8;
+    z-index:200;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.overlay.open{
+    display:flex;
+}
+
+.location-box{
+    width:min(420px,100%);
+    background:white;
+    border-radius:22px;
+    padding:28px;
+    text-align:center;
+    box-shadow:0 25px 70px #0003;
+}
+
+.location-icon{
+    width:65px;
+    height:65px;
+    border-radius:20px;
+    background:#dcfce7;
+    color:#15803d;
+    display:grid;
+    place-items:center;
+    margin:0 auto 18px;
+}
+
+.location-icon svg{
+    width:31px;
+    height:31px;
+}
+
+.location-box h3{
+    font-size:21px;
+    margin-bottom:9px;
+}
+
+.location-box p{
+    color:#777;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.location-status{
+    margin:18px 0;
+    padding:12px;
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
+    color:#15803d;
+    border-radius:11px;
+    font-size:13px;
+    font-weight:800;
+}
+
+.location-actions{
+    display:flex;
+    gap:8px;
+}
+
+.location-actions button{
+    flex:1;
+    border:0;
+    padding:12px;
+    border-radius:11px;
+    cursor:pointer;
+    font-weight:800;
+}
+
+.allow{
+    background:#16a34a;
+    color:white;
+}
+
+.close{
+    background:#f3f4f6;
+    color:#374151;
+}
+
+/* =========================
+   RESULT
+========================= */
+
+.result{
+    display:none;
+    margin-top:15px;
+    padding:15px;
+    border-radius:12px;
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
+    color:#166534;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.result.show{
+    display:block;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+    text-align:center;
+    padding:35px 20px;
+    color:#9ca3af;
+    font-size:12px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:650px){
+
+    header{
+        padding:0 20px;
+    }
+
+    main{
+        padding:25px 14px;
+    }
+
+    .hero{
+        padding:35px 10px 25px;
+    }
+
+    .hero h1{
+        letter-spacing:-1px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .field.full{
+        grid-column:auto;
+    }
+
+    .card{
+        padding:18px;
+    }
 }
 </style>
-
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f58529'/%3E%3Cstop offset='45%25' stop-color='%23dd2a7b'/%3E%3Cstop offset='100%25' stop-color='%238134af'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='28' fill='url(%23g)'/%3E%3Crect x='23' y='23' width='54' height='54' rx='17' fill='none' stroke='white' stroke-width='7'/%3E%3Ccircle cx='50' cy='50' r='13' fill='none' stroke='white' stroke-width='7'/%3E%3Ccircle cx='68' cy='32' r='5' fill='white'/%3E%3C/svg%3E">
-
 </head>
 
 <body>
 
-<section class="login" id="login">
+<!-- =========================
+     LOADING SCREEN
+========================= -->
 
-  <div class="login-box">
+<div id="loadingScreen">
 
-    <div class="logo">MeetTime</div>
+    <div class="loader">
 
-    <h2 style="margin-top:8px">
-      Yönetim Paneli
-    </h2>
+        <div class="loader-logo">
+            M
+        </div>
 
-    <p class="muted">
-      Başvuruları görüntülemek için yönetici şifresini gir.
-    </p>
+        <h1>MeetTime</h1>
 
-    <label for="password">
-      Yönetici şifresi
-    </label>
+        <div class="loader-ring"></div>
 
-    <input
-      id="password"
-      type="password"
-      placeholder="Şifre"
-    >
+        <p id="loadingText">
+            Veriler analiz ediliyor...
+        </p>
 
-    <button
-      class="btn primary"
-      id="loginBtn"
-    >
-      Panele Gir
-    </button>
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
 
-    <div class="error" id="loginError">
-      Şifre yanlış.
+        <div class="percent" id="percent">
+            %0
+        </div>
+
     </div>
 
-  </div>
+</div>
 
-</section>
-
-
-<section class="dashboard" id="dashboard">
+<!-- =========================
+     HEADER
+========================= -->
 
 <header>
 
-  <h1>
-    MeetTime
-    <span style="color:#dd2a7b">
-      Yönetim
-    </span>
-  </h1>
+    <div class="logo">
+        Meet<span>Time</span>
+    </div>
 
-  <div class="header-actions">
+    <div class="header-actions">
 
-    <button
-      class="location-btn"
-      id="locationBtn"
-      type="button"
-      title="Konum bağlantısı"
-    >
-      <span id="locationIcon">🌐</span>
-      <span id="locationText">Konum</span>
-    </button>
+        <button
+            class="location-btn"
+            id="locationButton"
+            title="Konum">
+            
+            <svg viewBox="0 0 24 24" fill="none">
+                <path
+                    d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"
+                    stroke="currentColor"
+                    stroke-width="2"/>
+                <circle
+                    cx="12"
+                    cy="9"
+                    r="2.5"
+                    stroke="currentColor"
+                    stroke-width="2"/>
+            </svg>
 
-    <button
-      class="btn logout"
-      id="logout"
-    >
-      Çıkış
-    </button>
+        </button>
 
-  </div>
+    </div>
 
 </header>
 
+<!-- =========================
+     MAIN
+========================= -->
 
 <main>
 
-<div class="top">
+    <section class="hero">
 
-  <div>
+        <div class="badge">
+            <span class="dot"></span>
+            Yakınındaki kişilerle bağlantı
+        </div>
 
-    <h2>
-      Başvurular
-    </h2>
+        <h1>
+            Bir buluşma için<br>
+            <span>doğru zamanı</span> bul.
+        </h1>
 
-    <p
-      class="muted"
-      style="margin:4px 0 0"
-    >
-      MeetTime başvuruları
-    </p>
+        <p>
+            MeetTime üzerinden buluşma başvurunu oluştur,
+            uygun zamanı belirle ve bağlantını kolayca planla.
+        </p>
 
-  </div>
+    </section>
 
-  <div class="actions">
+    <section class="card">
 
-    <button
-      class="btn refresh"
-      id="refresh"
-    >
-      ↻ Yenile
-    </button>
+        <h2>Buluşma Başvurusu</h2>
 
-  </div>
+        <p class="card-sub">
+            Aşağıdaki bilgileri doldurarak başvurunu oluştur.
+        </p>
 
-</div>
+        <form id="applicationForm">
 
+            <div class="form-grid">
 
-<div
-  class="notice"
-  id="notice"
-></div>
+                <div class="field">
 
+                    <label>Ad Soyad</label>
 
-<div class="stats">
+                    <input
+                        id="name"
+                        type="text"
+                        placeholder="Adınız ve soyadınız"
+                        required>
 
-  <div class="stat">
+                </div>
 
-    <span>
-      Toplam başvuru
-    </span>
+                <div class="field">
 
-    <b id="total">
-      0
-    </b>
+                    <label>Kiminle?</label>
 
-  </div>
+                    <input
+                        id="person"
+                        type="text"
+                        placeholder="Buluşacağınız kişi"
+                        required>
 
-  <div class="stat">
+                </div>
 
-    <span>
-      Bugünkü başvuru
-    </span>
+                <div class="field">
 
-    <b id="today">
-      0
-    </b>
+                    <label>Gün</label>
 
-  </div>
+                    <select id="day" required>
 
-  <div class="stat">
+                        <option value="">
+                            Gün seçin
+                        </option>
 
-    <span>
-      Son başvuru
-    </span>
+                        <option>Pazartesi</option>
+                        <option>Salı</option>
+                        <option>Çarşamba</option>
+                        <option>Perşembe</option>
+                        <option>Cuma</option>
+                        <option>Cumartesi</option>
+                        <option>Pazar</option>
 
-    <b id="latest">
-      —
-    </b>
+                    </select>
 
-  </div>
+                </div>
 
-</div>
+                <div class="field">
 
+                    <label>Saat</label>
 
-<div class="table-wrap">
+                    <input
+                        id="time"
+                        type="time"
+                        required>
 
-<table>
+                </div>
 
-<thead>
+                <div class="field full">
 
-<tr>
-<th>Sıra</th>
-<th>Kiminle?</th>
-<th>Ad Soyad</th>
-<th>Gün</th>
-<th>Saat</th>
-<th>Buluşma nedeni</th>
-<th>İletişim</th>
-<th>Tarih</th>
-<th>Durum</th>
-<th>İşlem</th>
-</tr>
+                    <label>İletişim</label>
 
-</thead>
+                    <input
+                        id="contact"
+                        type="text"
+                        placeholder="Telefon / Instagram vb."
+                        required>
 
-<tbody id="rows">
+                </div>
 
-<tr>
+                <div class="field full">
 
-<td
-colspan="10"
-class="empty"
->
-Başvurular yükleniyor...
-</td>
+                    <label>Buluşma nedeni</label>
 
-</tr>
+                    <textarea
+                        id="reason"
+                        placeholder="Buluşma nedeninizi yazın..."
+                        required></textarea>
 
-</tbody>
+                </div>
 
-</table>
+            </div>
 
-</div>
+            <button
+                class="submit"
+                id="submitButton"
+                type="submit">
 
+                Başvuruyu Gönder
 
-<section class="chat-panel">
+            </button>
 
-<h3>
-💬 Ortak Sohbet
-</h3>
+        </form>
 
-<p class="chat-sub">
-Mesaj yaz veya dosya ekle (fotoğraf / belge). Max 3 MB.
-</p>
+        <div
+            class="result"
+            id="result">
+        </div>
 
-<div
-id="chatMessages"
-class="chat-messages"
->
-
-<div class="chat-empty">
-Henüz mesaj yok.
-</div>
-
-</div>
-
-
-<form
-id="chatForm"
-class="chat-form"
->
-
-<select
-id="chatName"
-required
->
-
-<option value="">
-Kim yazıyor?
-</option>
-
-<option value="Kadir">
-Kadir
-</option>
-
-<option value="Arslan">
-Arslan
-</option>
-
-</select>
-
-
-<input
-id="chatText"
-type="text"
-maxlength="500"
-placeholder="Mesaj yaz..."
-autocomplete="off"
->
-
-
-<label class="file-btn">
-
-📎 Dosya
-
-<input
-type="file"
-id="chatFile"
-accept="image/jpeg,image/png,image/webp,application/pdf,.doc,.docx"
->
-
-</label>
-
-
-<span
-class="file-name"
-id="fileName"
-></span>
-
-
-<button
-type="submit"
->
-Gönder
-</button>
-
-</form>
-
-</section>
-
-
-<div class="incognito-wrap">
-
-<button
-class="incognito-btn"
-id="incognitoBtn"
-title="Ziyaretçiler"
->
-
-<svg
-viewBox="0 0 24 24"
-fill="none"
-xmlns="http://www.w3.org/2000/svg"
->
-
-<path
-d="M12 2C9.5 2 7.5 3.5 7 5.5C5 6 3.5 8 3.5 10.5C3.5 12 4.2 13.3 5.3 14.2C4.5 15.5 4 17 4 18.5C4 21 6.5 22.5 9.5 22.5C11 22.5 12.3 22 13.2 21.2C13.7 21.4 14.3 21.5 15 21.5C17.5 21.5 19.5 20 20.2 17.8C21.5 17.2 22.5 15.7 22.5 14C22.5 11.5 20.5 9.5 18 9.2C18.3 8.5 18.5 7.7 18.5 6.8C18.5 4.2 16.3 2 12 2Z"
-fill="#5F6368"
-/>
-
-<ellipse
-cx="9"
-cy="11"
-rx="1.3"
-ry="1.5"
-fill="#fff"
-/>
-
-<ellipse
-cx="15"
-cy="11"
-rx="1.3"
-ry="1.5"
-fill="#fff"
-/>
-
-<path
-d="M8 15.5C9 16.5 10.5 17 12 17C13.5 17 15 16.5 16 15.5"
-stroke="#fff"
-stroke-width="1.2"
-stroke-linecap="round"
-/>
-
-<path
-d="M7 7C8 5.5 10 4.5 12 4.5C14 4.5 16 5.5 17 7"
-stroke="#fff"
-stroke-width="1.5"
-stroke-linecap="round"
-/>
-
-</svg>
-
-</button>
-
-</div>
+    </section>
 
 </main>
 
-</section>
+<footer>
+    MeetTime © 2026
+</footer>
 
-
-<div
-class="modal-overlay"
-id="fileModal"
->
-
-<div class="modal-box">
-
-<button
-class="modal-close"
-id="modalClose"
->
-×
-</button>
+<!-- =========================
+     LOCATION MODAL
+========================= -->
 
 <div
-class="modal-title"
-id="modalTitle"
-></div>
+    class="overlay"
+    id="locationModal">
 
-<div id="modalContent"></div>
+    <div class="location-box">
 
-<div class="modal-actions">
+        <div class="location-icon">
 
-<a
-id="modalDownload"
-href="#"
-download
->
-İndir
-</a>
+            <svg viewBox="0 0 24 24" fill="none">
+
+                <path
+                    d="M12 21s7-6.2 7-12A7 7 0 1 0 5 9c0 5.8 7 12 7 12Z"
+                    stroke="currentColor"
+                    stroke-width="2"/>
+
+                <circle
+                    cx="12"
+                    cy="9"
+                    r="2.5"
+                    stroke="currentColor"
+                    stroke-width="2"/>
+
+            </svg>
+
+        </div>
+
+        <h3>Konum bağlantısı</h3>
+
+        <p>
+            Yakınınızdaki kişileri ve MeetTime
+            bağlantı özelliklerini kullanabilmek için
+            konum erişimine izin verebilirsiniz.
+        </p>
+
+        <div
+            class="location-status"
+            id="locationStatus">
+
+            Konum bağlantısı kontrol ediliyor...
+
+        </div>
+
+        <div class="location-actions">
+
+            <button
+                class="close"
+                id="closeLocation">
+
+                Kapat
+
+            </button>
+
+            <button
+                class="allow"
+                id="allowLocation">
+
+                Konuma İzin Ver
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
-
-</div>
-
-</div>
-
-
-<div
-class="visitors-overlay"
-id="visitorsModal"
->
-
-<div class="visitors-box">
-
-<div class="visitors-header">
-
-<h3>
-👁 Ziyaretçiler
-</h3>
-
-<button
-class="visitors-close"
-id="visitorsClose"
->
-×
-</button>
-
-</div>
-
-<div
-class="visitors-list"
-id="visitorsList"
->
-
-<div class="visitors-empty">
-Yükleniyor...
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 
 <script>
 
-const ADMIN_PASSWORD = "sex";
+/* =========================
+   AYARLAR
+========================= */
 
 const API_URL =
 "https://meetime-api.kadzoka5452.workers.dev";
 
+/* =========================
+   LOADING
+========================= */
 
-const login =
-document.getElementById("login");
+const loadingMessages = [
 
-const dashboard =
-document.getElementById("dashboard");
+    "Veriler analiz ediliyor...",
 
-const password =
-document.getElementById("password");
+    "Yakındaki kullanıcılar aranıyor...",
 
-const loginBtn =
-document.getElementById("loginBtn");
+    "Bağlantılar kontrol ediliyor...",
 
-const loginError =
-document.getElementById("loginError");
+    "MeetTime yapılandırması hazırlanıyor...",
 
-const rows =
-document.getElementById("rows");
+    "Bellek durumu kontrol ediliyor...",
 
-const notice =
-document.getElementById("notice");
+    "Sistem hazırlanıyor..."
+
+];
+
+const loadingScreen =
+document.getElementById("loadingScreen");
+
+const loadingText =
+document.getElementById("loadingText");
+
+const progressBar =
+document.getElementById("progressBar");
+
+const percent =
+document.getElementById("percent");
+
+let progress = 0;
+
+const loadingInterval =
+setInterval(() => {
+
+    progress += 1;
+
+    progressBar.style.width =
+        progress + "%";
+
+    percent.textContent =
+        "%" + progress;
+
+    const index =
+        Math.min(
+            Math.floor(progress / 17),
+            loadingMessages.length - 1
+        );
+
+    loadingText.textContent =
+        loadingMessages[index];
+
+    if(progress >= 100){
+
+        clearInterval(loadingInterval);
+
+        setTimeout(() => {
+
+            loadingScreen.style.opacity = "0";
+
+            setTimeout(() => {
+
+                loadingScreen.style.display = "none";
+
+            },600);
+
+        },300);
+    }
+
+},100);
+
+/* =========================
+   LOCATION
+========================= */
+
+const locationButton =
+document.getElementById("locationButton");
+
+const locationModal =
+document.getElementById("locationModal");
+
+const locationStatus =
+document.getElementById("locationStatus");
+
+const allowLocation =
+document.getElementById("allowLocation");
+
+const closeLocation =
+document.getElementById("closeLocation");
 
 
-function escapeHtml(v){
+function openLocation(){
 
-return String(v ?? "").replace(
-/[&<>"']/g,
-m => ({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#039;"
-}[m])
+    locationModal.classList.add("open");
+
+    checkLocation();
+
+}
+
+
+function closeLocationModal(){
+
+    locationModal.classList.remove("open");
+
+}
+
+
+locationButton.onclick =
+openLocation;
+
+
+closeLocation.onclick =
+closeLocationModal;
+
+
+locationModal.addEventListener(
+    "click",
+    function(e){
+
+        if(e.target === locationModal){
+
+            closeLocationModal();
+
+        }
+
+    }
 );
 
-}
 
+/* Konum durumunu kontrol et */
 
-function showDashboard(){
+async function checkLocation(){
 
-login.style.display="none";
+    if(!navigator.geolocation){
 
-dashboard.style.display="block";
+        locationStatus.textContent =
+            "Bu tarayıcı konum özelliğini desteklemiyor.";
 
-loadApplications();
+        allowLocation.disabled = true;
 
-loadChat();
+        return;
+    }
 
-}
+    try{
 
+        if(navigator.permissions){
 
-function showError(msg){
+            const permission =
+                await navigator.permissions.query({
+                    name:"geolocation"
+                });
 
-loginError.textContent=msg;
+            if(permission.state === "granted"){
 
-loginError.style.display="block";
+                locationStatus.innerHTML =
+                    "✓ Bağlantınız mevcut.";
 
-}
+                allowLocation.textContent =
+                    "Konumu Güncelle";
 
+            }
 
-loginBtn.onclick=function(){
+            else if(permission.state === "denied"){
 
-if(password.value===ADMIN_PASSWORD){
+                locationStatus.innerHTML =
+                    "Konum izni engellenmiş. Tarayıcı ayarlarından izin vermeniz gerekiyor.";
 
-sessionStorage.setItem(
-"meet_admin",
-"1"
-);
+            }
 
-showDashboard();
+            else{
 
-}else{
+                locationStatus.innerHTML =
+                    "Konum bağlantısı kurulmadı.";
 
-showError("Şifre yanlış.");
+            }
 
-}
+            permission.onchange =
+                checkLocation;
 
-};
+        }
 
+    }catch(e){
 
-password.addEventListener(
-"keydown",
-e=>{
-if(e.key==="Enter"){
-loginBtn.click();
-}
-});
+        locationStatus.innerHTML =
+            "Konum bağlantısı kontrol edilemedi.";
 
-
-document.getElementById("logout").onclick=function(){
-
-sessionStorage.removeItem(
-"meet_admin"
-);
-
-location.reload();
-
-};
-
-
-document.getElementById("refresh").onclick=function(){
-
-loadApplications();
-
-loadChat();
-
-};
-
-
-/* APPLICATIONS */
-
-async function loadApplications(){
-
-notice.style.display="none";
-
-rows.innerHTML=
-'<tr><td colspan="10" class="empty">Başvurular yükleniyor...</td></tr>';
-
-try{
-
-const response=await fetch(
-API_URL+"?action=applications",
-{
-headers:{
-"X-Admin-Password":ADMIN_PASSWORD
-}
-}
-);
-
-const data=await response.json();
-
-if(!data.success)
-throw new Error(
-data.message ||
-"Başvurular alınamadı."
-);
-
-const apps=data.applications||[];
-
-document.getElementById("total")
-.textContent=apps.length;
-
-const todayKey=
-new Date().toLocaleDateString("tr-TR");
-
-const todayApps=
-apps.filter(
-a=>
-new Date(
-Number(a.created_at)
-)
-.toLocaleDateString("tr-TR")
-===todayKey
-);
-
-document.getElementById("today")
-.textContent=todayApps.length;
-
-document.getElementById("latest")
-.textContent=
-apps.length
-?
-new Date(
-Number(apps[0].created_at)
-).toLocaleTimeString(
-"tr-TR",
-{
-hour:"2-digit",
-minute:"2-digit"
-}
-)
-:
-"—";
-
-
-if(!apps.length){
-
-rows.innerHTML=
-'<tr><td colspan="10" class="empty">Henüz başvuru yok.</td></tr>';
-
-return;
+    }
 
 }
 
 
-rows.innerHTML=apps.map(
-(a,i)=>`
+/* Konum alma */
 
-<tr>
-
-<td>
-<strong>
-${escapeHtml(
-String(a.id ?? i+1).padStart(3,"0")
-)}
-</strong>
-</td>
-
-<td>
-<span class="status">
-${escapeHtml(
-a.person ||
-a.withWhom ||
-"—"
-)}
-</span>
-</td>
-
-<td>
-<strong>
-${escapeHtml(a.name||"—")}
-</strong>
-</td>
-
-<td>
-${escapeHtml(a.day||"—")}
-</td>
-
-<td>
-${escapeHtml(a.time||"—")}
-</td>
-
-<td class="reason">
-${escapeHtml(a.reason||"—")}
-</td>
-
-<td>
-${escapeHtml(a.contact||"—")}
-</td>
-
-<td>
-${formatDate(a.created_at)}
-</td>
-
-<td>
-<span class="status ${statusClass(a.status)}">
-${escapeHtml(statusText(a.status))}
-</span>
-</td>
-
-<td>
-
-<div class="row-actions">
-
-<button
-class="small-btn approve"
-onclick="changeStatus(${Number(a.id)},'approved')"
->
-Onayla
-</button>
-
-<button
-class="small-btn reject"
-onclick="changeStatus(${Number(a.id)},'rejected')"
->
-Reddet
-</button>
-
-<button
-class="small-btn delete"
-onclick="deleteApplication(${Number(a.id)})"
->
-Sil
-</button>
-
-</div>
-
-</td>
-
-</tr>
-
-`
-).join("");
-
-
-}catch(err){
-
-console.error(err);
-
-rows.innerHTML=
-'<tr><td colspan="10" class="empty">Başvurular alınamadı.</td></tr>';
-
-notice.textContent=err.message;
-
-notice.style.display="block";
-
-}
-
-}
-
-
-function statusText(v){
-
-if(v==="approved")
-return "Onaylandı";
-
-if(v==="rejected")
-return "Reddedildi";
-
-return "İnceleniyor";
-
-}
-
-
-function statusClass(v){
-
-if(v==="approved")
-return "approved";
-
-if(v==="rejected")
-return "rejected";
-
-return "";
-
-}
-
-
-async function adminAction(action,id){
-
-const response=await fetch(
-API_URL+
-"?action="+
-encodeURIComponent(action),
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"X-Admin-Password":ADMIN_PASSWORD
-},
-body:JSON.stringify({id})
-}
-);
-
-const data=await response.json();
-
-if(!data.success)
-throw new Error(
-data.message||
-"İşlem başarısız."
-);
-
-return data;
-
-}
-
-
-async function changeStatus(id,status){
-
-const label=
-status==="approved"
-?
-"onaylamak"
-:
-"reddetmek";
-
-if(!confirm(
-"Bu başvuruyu "+
-label+
-" istediğine emin misin?"
-))
-return;
-
-try{
-
-await adminAction(
-status==="approved"
-?
-"approve"
-:
-"reject",
-id
-);
-
-await loadApplications();
-
-}catch(err){
-
-alert(err.message);
-
-}
-
-}
-
-
-async function deleteApplication(id){
-
-if(!confirm(
-"Bu başvuruyu kalıcı olarak silmek istediğine emin misin?"
-))
-return;
-
-try{
-
-await adminAction(
-"delete",
-id
-);
-
-await loadApplications();
-
-}catch(err){
-
-alert(err.message);
-
-}
-
-}
-
-
-function formatDate(v){
-
-const d=new Date(Number(v));
-
-if(isNaN(d))
-return "—";
-
-return d.toLocaleString(
-"tr-TR",
-{
-dateStyle:"short",
-timeStyle:"short"
-}
-);
-
-}
-
-
-/* FILE MODAL */
-
-const modal=
-document.getElementById("fileModal");
-
-const modalTitle=
-document.getElementById("modalTitle");
-
-const modalContent=
-document.getElementById("modalContent");
-
-const modalDownload=
-document.getElementById("modalDownload");
-
-const modalClose=
-document.getElementById("modalClose");
-
-
-function openFileModal(
-url,
-name,
-isImage
-){
-
-modalTitle.textContent=
-name||
-"Dosya";
-
-modalDownload.href=url;
-
-modalDownload.setAttribute(
-"download",
-name||
-"dosya"
-);
-
-if(isImage){
-
-modalContent.innerHTML=
-`<img
-src="${escapeHtml(url)}"
-alt="${escapeHtml(name||"")}"
->`;
-
-}else{
-
-modalContent.innerHTML=
-`<p style="padding:20px;text-align:center;color:#555">
-Belge önizlemesi yok. Aşağıdan indirebilirsin.
-</p>`;
-
-}
-
-modal.classList.add("open");
-
-}
-
-
-function closeModal(){
-
-modal.classList.remove("open");
-
-modalContent.innerHTML="";
-
-}
-
-
-modalClose.onclick=
-closeModal;
-
-modal.onclick=function(e){
-
-if(e.target===modal)
-closeModal();
-
-};
-
-
-/* VISITORS */
-
-const visitorsModal=
-document.getElementById("visitorsModal");
-
-const visitorsList=
-document.getElementById("visitorsList");
-
-const visitorsClose=
-document.getElementById("visitorsClose");
-
-const incognitoBtn=
-document.getElementById("incognitoBtn");
-
-
-function closeVisitors(){
-
-visitorsModal.classList.remove("open");
-
-}
-
-
-visitorsClose.onclick=
-closeVisitors;
-
-
-visitorsModal.onclick=function(e){
-
-if(e.target===visitorsModal)
-closeVisitors();
-
-};
-
-
-incognitoBtn.onclick=async function(){
-
-visitorsModal.classList.add("open");
-
-visitorsList.innerHTML=
-'<div class="visitors-empty">Yükleniyor...</div>';
-
-try{
-
-const res=await fetch(
-API_URL+"?action=visitors",
-{
-headers:{
-"X-Admin-Password":
-ADMIN_PASSWORD
-}
-}
-);
-
-const data=await res.json();
-
-if(!data.success)
-throw new Error(
-data.message||
-"Alınamadı."
-);
-
-const list=data.visitors||[];
-
-if(!list.length){
-
-visitorsList.innerHTML=
-'<div class="visitors-empty">Henüz ziyaretçi yok.</div>';
-
-return;
-
-}
-
-visitorsList.innerHTML=
-list.map(v=>`
-
-<div class="visitor-row">
-
-<div class="visitor-top">
-
-<div>
-
-<b>
-${escapeHtml(v.ip||"—")}
-</b>
-
-<div class="visitor-meta">
-
-📍
-${escapeHtml(v.city||"—")}
-/
-${escapeHtml(v.region||"—")}
-
-(${escapeHtml(v.country||"—")})
-
-<br>
-
-${
-v.address
-?
-"🏠 "+
-escapeHtml(v.address)+
-"<br>"
-:
-""
-}
-
-${
-v.lat!=null
-?
-"📌 "+
-Number(v.lat).toFixed(5)+
-", "+
-Number(v.lng).toFixed(5)+
-"<br>"
-:
-""
-}
-
-🕒
-${formatDate(v.created_at)}
-
-</div>
-
-</div>
-
-<button
-class="visitor-delete"
-onclick="deleteVisitor(${Number(v.id)})"
-title="Ziyaretçiyi sil"
->
-🗑️
-</button>
-
-</div>
-
-</div>
-
-`).join("");
-
-}catch(err){
-
-visitorsList.innerHTML=
-'<div class="visitors-empty">'+
-escapeHtml(err.message)+
-'</div>';
-
-}
-
-};
-
-
-/* VISITOR DELETE */
-
-async function deleteVisitor(id){
-
-if(!confirm(
-"Bu ziyaretçiyi kalıcı olarak silmek istediğine emin misin?"
-))
-return;
-
-try{
-
-const res=await fetch(
-API_URL+
-"?action=delete-visitor",
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"X-Admin-Password":
-ADMIN_PASSWORD
-},
-body:JSON.stringify({
-id:Number(id)
-})
-}
-);
-
-const data=await res.json();
-
-if(!data.success)
-throw new Error(
-data.message||
-"Ziyaretçi silinemedi."
-);
-
-await incognitoBtn.onclick();
-
-}catch(err){
-
-alert(
-"Ziyaretçi silinemedi: "+
-err.message
-);
-
-}
-
-}
-
-
-/* CHAT */
-
-async function loadChat(){
-
-const box=
-document.getElementById(
-"chatMessages"
-);
-
-if(!box)
-return;
-
-try{
-
-const res=await fetch(
-API_URL+"?action=chat",
-{
-headers:{
-"X-Admin-Password":
-ADMIN_PASSWORD
-}
-}
-);
-
-const data=await res.json();
-
-if(!data.success)
-throw new Error(
-data.message||
-"Sohbet yüklenemedi."
-);
-
-const messages=
-data.messages||[];
-
-if(!messages.length){
-
-box.innerHTML=
-'<div class="chat-empty">Henüz mesaj yok.</div>';
-
-return;
-
-}
-
-box.innerHTML=
-messages.map(m=>{
-
-let fileHtml="";
-
-if(m.file_id){
-
-const fileUrl=
-API_URL+
-"?action=file&id="+
-m.file_id;
-
-const isImage=
-(m.file_mime||"")
-.startsWith("image/");
-
-const name=
-m.file_name||
-"dosya";
-
-if(isImage){
-
-fileHtml=
-`<div class="chat-file">
-
-<img
-src="${escapeHtml(fileUrl)}"
-alt="${escapeHtml(name)}"
-loading="lazy"
-onclick="openFileModal(
-'${escapeHtml(fileUrl)}',
-'${escapeHtml(name)}',
-true
-)"
->
-
-</div>`;
-
-}else{
-
-fileHtml=
-`<div class="chat-file">
-
-<span
-class="file-link"
-onclick="openFileModal(
-'${escapeHtml(fileUrl)}',
-'${escapeHtml(name)}',
-false
-)"
->
-📄 ${escapeHtml(name)}
-</span>
-
-</div>`;
-
-}
-
-}
-
-const textHtml=
-m.message
-?
-`<div>${escapeHtml(m.message)}</div>`
-:
-"";
-
-return `
-
-<div class="chat-msg">
-
-<div class="chat-name">
-${escapeHtml(m.sender||"Bilinmiyor")}
-</div>
-
-${textHtml}
-
-${fileHtml}
-
-<div class="chat-message-footer">
-
-<div class="chat-time">
-${formatDate(m.created_at)}
-</div>
-
-<button
-type="button"
-class="chat-delete"
-onclick="deleteChatMessage(${Number(m.id)})"
->
-🗑️ Sil
-</button>
-
-</div>
-
-</div>
-
-`;
-
-}).join("");
-
-box.scrollTop=
-box.scrollHeight;
-
-}catch(err){
-
-console.error(err);
-
-box.innerHTML=
-'<div class="chat-empty">'+
-escapeHtml(err.message)+
-'</div>';
-
-}
-
-}
-
-
-async function deleteChatMessage(id){
-
-if(!confirm(
-"Bu mesajı silmek istediğine emin misin?"
-))
-return;
-
-try{
-
-const res=await fetch(
-API_URL+
-"?action=delete-chat",
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"X-Admin-Password":
-ADMIN_PASSWORD
-},
-body:JSON.stringify({id})
-}
-);
-
-const data=await res.json();
-
-if(!data.success)
-throw new Error(
-data.message||
-"Mesaj silinemedi."
-);
-
-await loadChat();
-
-}catch(err){
-
-alert(
-"Mesaj silinemedi: "+
-err.message
-);
-
-}
-
-}
-
-
-document.getElementById(
-"chatFile"
-).addEventListener(
-"change",
+allowLocation.onclick =
 function(){
 
-document.getElementById(
-"fileName"
-).textContent=
-this.files[0]
-?
-this.files[0].name
-:
-"";
+    if(!navigator.geolocation){
 
-});
+        locationStatus.textContent =
+            "Konum özelliği desteklenmiyor.";
 
+        return;
 
-document.getElementById(
-"chatForm"
-).addEventListener(
-"submit",
-async function(e){
+    }
 
-e.preventDefault();
+    locationStatus.textContent =
+        "Yakınınızdaki insanlar aranıyor...";
 
-const sender=
-document.getElementById(
-"chatName"
-).value;
+    navigator.geolocation.getCurrentPosition(
 
-const input=
-document.getElementById(
-"chatText"
-);
-
-const fileInput=
-document.getElementById(
-"chatFile"
-);
+        async function(position){
 
-const message=
-input.value.trim();
+            const lat =
+                position.coords.latitude;
 
-const file=
-fileInput.files[0];
+            const lng =
+                position.coords.longitude;
 
-if(!sender){
+            locationStatus.innerHTML =
+                "✓ Bağlantınız mevcut.";
 
-alert(
-"Önce kim olduğunu seç."
-);
+            try{
 
-return;
+                await fetch(
+                    API_URL + "?action=track",
+                    {
+                        method:"POST",
 
-}
+                        headers:{
+                            "Content-Type":
+                            "application/json"
+                        },
 
-if(!message&&!file){
+                        body:JSON.stringify({
+                            lat:lat,
+                            lng:lng
+                        })
+                    }
+                );
 
-alert(
-"Mesaj yaz veya dosya seç."
-);
+            }catch(e){
 
-return;
+                console.log(
+                    "Konum sunucuya gönderilemedi."
+                );
 
-}
+            }
 
-if(
-file &&
-file.size >
-3*1024*1024
-){
+        },
 
-alert(
-"Dosya 3 MB'dan büyük olamaz."
-);
+        function(error){
 
-return;
+            if(error.code === 1){
 
-}
+                locationStatus.textContent =
+                    "Konum izni verilmedi.";
 
-const button=
-this.querySelector(
-"button[type='submit']"
-);
+            }else{
 
-button.disabled=true;
+                locationStatus.textContent =
+                    "Konum alınamadı.";
 
-button.textContent=
-"Gönderiliyor...";
+            }
 
-try{
+        },
 
-const form=
-new FormData();
+        {
+            enableHighAccuracy:true,
+            timeout:10000,
+            maximumAge:300000
+        }
 
-form.append(
-"sender",
-sender
-);
-
-if(message)
-form.append(
-"message",
-message
-);
-
-if(file)
-form.append(
-"file",
-file
-);
-
-const res=
-await fetch(
-API_URL+
-"?action=chat",
-{
-method:"POST",
-headers:{
-"X-Admin-Password":
-ADMIN_PASSWORD
-},
-body:form
-}
-);
-
-const data=
-await res.json();
-
-if(!data.success)
-throw new Error(
-data.message||
-"Gönderilemedi."
-);
-
-input.value="";
-
-fileInput.value="";
-
-document.getElementById(
-"fileName"
-).textContent="";
-
-await loadChat();
-
-input.focus();
-
-}catch(err){
-
-alert(
-"Gönderilemedi: "+
-err.message
-);
-
-}finally{
-
-button.disabled=false;
-
-button.textContent=
-"Gönder";
-
-}
-
-});
-
-
-/* =========================================
-   KONUM
-========================================= */
-
-const locationBtn=
-document.getElementById(
-"locationBtn"
-);
-
-const locationIcon=
-document.getElementById(
-"locationIcon"
-);
-
-const locationText=
-document.getElementById(
-"locationText"
-);
-
-
-function locationStatus(
-type,
-icon,
-text
-){
-
-locationBtn.classList.remove(
-"loading",
-"connected",
-"denied",
-"searching"
-);
-
-if(type)
-locationBtn.classList.add(type);
-
-locationIcon.textContent=
-icon;
-
-locationText.textContent=
-text;
-
-}
-
-
-async function checkLocationPermission(){
-
-if(!navigator.geolocation){
-
-locationStatus(
-"denied",
-"⚠️",
-"Desteklenmiyor"
-);
-
-return;
-
-}
-
-if(!navigator.permissions)
-return;
-
-try{
-
-const permission=
-await navigator.permissions.query({
-name:"geolocation"
-});
-
-if(permission.state==="granted"){
-
-locationStatus(
-"connected",
-"🌐",
-"Bağlantınız mevcut."
-);
-
-}
-
-else if(
-permission.state==="denied"
-){
-
-locationStatus(
-"denied",
-"🚫",
-"Konum kapalı"
-);
-
-}
-
-permission.onchange=
-function(){
-
-if(
-permission.state===
-"granted"
-){
-
-locationStatus(
-"connected",
-"🌐",
-"Bağlantınız mevcut."
-);
-
-}
-
-else if(
-permission.state===
-"denied"
-){
-
-locationStatus(
-"denied",
-"🚫",
-"Konum kapalı"
-);
-
-}
+    );
 
 };
 
-}catch(e){
 
-console.log(
-"Konum izin durumu kontrol edilemedi.",
-e
+/* =========================
+   APPLICATION
+========================= */
+
+const form =
+document.getElementById("applicationForm");
+
+const result =
+document.getElementById("result");
+
+const submitButton =
+document.getElementById("submitButton");
+
+
+form.addEventListener(
+    "submit",
+    async function(e){
+
+        e.preventDefault();
+
+        submitButton.disabled = true;
+
+        submitButton.textContent =
+            "Gönderiliyor...";
+
+        result.classList.remove("show");
+
+        const data = {
+
+            name:
+                document.getElementById("name").value.trim(),
+
+            person:
+                document.getElementById("person").value.trim(),
+
+            reason:
+                document.getElementById("reason").value.trim(),
+
+            day:
+                document.getElementById("day").value.trim(),
+
+            time:
+                document.getElementById("time").value.trim(),
+
+            contact:
+                document.getElementById("contact").value.trim()
+
+        };
+
+
+        if(
+            !data.name ||
+            !data.person ||
+            !data.reason ||
+            !data.day ||
+            !data.time ||
+            !data.contact
+        ){
+
+            result.textContent =
+                "Lütfen tüm alanları doldurun.";
+
+            result.classList.add("show");
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                "Başvuruyu Gönder";
+
+            return;
+
+        }
+
+
+        try{
+
+            const response =
+                await fetch(
+                    API_URL,
+                    {
+                        method:"POST",
+
+                        headers:{
+                            "Content-Type":
+                            "application/json"
+                        },
+
+                        body:JSON.stringify(data)
+                    }
+                );
+
+
+            const responseData =
+                await response.json();
+
+
+            if(!responseData.success){
+
+                result.textContent =
+                    responseData.message ||
+                    "Başvuru gönderilemedi.";
+
+                result.classList.add("show");
+
+            }else{
+
+                result.innerHTML =
+                    "✓ " +
+                    (responseData.message ||
+                    "Başvurunuz başarıyla alındı.");
+
+                result.classList.add("show");
+
+                form.reset();
+
+            }
+
+        }catch(error){
+
+            result.textContent =
+                "Sunucuya bağlanılamadı. Lütfen tekrar deneyin.";
+
+            result.classList.add("show");
+
+        }finally{
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                "Başvuruyu Gönder";
+
+        }
+
+    }
 );
 
-}
 
-}
-
-
-function requestLocation(){
-
-if(!navigator.geolocation){
-
-locationStatus(
-"denied",
-"⚠️",
-"Desteklenmiyor"
-);
-
-return;
-
-}
-
-locationStatus(
-"loading",
-"⏳",
-"Konum alınıyor..."
-);
-
-navigator.geolocation.getCurrentPosition(
-
-function(position){
-
-console.log(
-"Kullanıcının kendi konumu:",
-position.coords.latitude,
-position.coords.longitude
-);
-
-locationStatus(
-"searching",
-"🔎",
-"Konum doğrulanıyor..."
-);
+/* Sayfa açılır açılmaz konum durumunu sessizce kontrol et */
 
 setTimeout(
-function(){
-
-locationStatus(
-"searching",
-"📍",
-"Yakındaki hizmetler kontrol ediliyor..."
+    checkLocation,
+    1000
 );
-
-},
-1000
-);
-
-setTimeout(
-function(){
-
-locationStatus(
-"connected",
-"🌐",
-"Bağlantınız mevcut."
-);
-
-},
-2500
-);
-
-},
-
-function(error){
-
-if(error.code===1){
-
-locationStatus(
-"denied",
-"🚫",
-"Konum izni verilmedi"
-);
-
-}
-
-else if(error.code===2){
-
-locationStatus(
-"denied",
-"⚠️",
-"Konum bulunamadı"
-);
-
-}
-
-else if(error.code===3){
-
-locationStatus(
-"denied",
-"⏱️",
-"Konum zaman aşımı"
-);
-
-}
-
-else{
-
-locationStatus(
-"denied",
-"⚠️",
-"Konum alınamadı"
-);
-
-}
-
-},
-
-{
-enableHighAccuracy:true,
-timeout:10000,
-maximumAge:0
-}
-
-);
-
-}
-
-
-locationBtn.addEventListener(
-"click",
-requestLocation
-);
-
-checkLocationPermission();
-
-
-/* ESC */
-
-document.addEventListener(
-"keydown",
-e=>{
-
-if(e.key==="Escape"){
-
-closeModal();
-
-closeVisitors();
-
-}
-
-});
-
-
-/* CHAT AUTO REFRESH */
-
-setInterval(
-loadChat,
-5000
-);
-
-
-/* LOGIN */
-
-if(
-sessionStorage.getItem(
-"meet_admin"
-)==="1"
-){
-
-showDashboard();
-
-}
 
 </script>
 
